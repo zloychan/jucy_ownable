@@ -273,10 +273,9 @@ contract OwnableTest is Test {
 
         // The owner gives permission to the caller.
         vm.prank(projectOwner);
-        PERMISSIONS.setPermissionsFor({
-            account: projectOwner,
-            permissionsData: JBPermissionsData({operator: callerAddress, projectId: _projectId, permissionIds: _permissionIds})
-        }
+        PERMISSIONS.setPermissionsFor(
+            projectOwner,
+            JBPermissionsData({operator: callerAddress, projectId: _projectId, permissionIds: _permissionIds})
         );
 
         if (!_shouldHavePermission) {
@@ -330,10 +329,10 @@ contract OwnableTest is Test {
 
         // The owner gives permission to the caller.
         vm.prank(projectOwner);
-        PERMISSIONS.setPermissionsFor({
-            account: projectOwner,
-            permissionsData: JBPermissionsData({operator: callerAddress, projectId: _projectId, permissionIds: _permissionIds})
-        });
+        PERMISSIONS.setPermissionsFor(
+            projectOwner,
+            JBPermissionsData({operator: callerAddress, projectId: _projectId, permissionIds: _permissionIds})
+        );
 
         if (!_shouldHavePermission) {
             vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.UNAUTHORIZED.selector));
