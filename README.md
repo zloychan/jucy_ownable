@@ -17,6 +17,8 @@ This repo contains 2 contracts:
 
 **NOTICE:** Only use `JBOwnableOverride` if you are overriding OpenZeppelin `Ownable` v4.7.0 or higher. Otherwise, `JBPermissions` functionality for `onlyOwner` will not work.
 
+*If you're having trouble understanding this contract, take a look at the [core Juicebox contracts](https://github.com/bananapus/juice-contracts-v4) and the [documentation](https://docs.juicebox.money/) first. If you have questions, reach out on [Discord](https://discord.com/invite/ErQYmth4dS).*
+
 ## Develop
 
 `juice-ownable` uses the [Foundry](https://github.com/foundry-rs/foundry) development toolchain for builds, tests, and deployments. To get set up, install [Foundry](https://github.com/foundry-rs/foundry):
