@@ -1,18 +1,53 @@
 # Juice Ownable
-A Juicebox variation upon [OpenZeppelin Ownable](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol) to allow for more seamless Ownable support for projects, changes from the regular Ownable are:
-- Ability to transfer ownership to a JB Project instead of a harcoded address
-- Ability to grant users/contracts permission to call OnlyOwner methods using `JBOperatorStore`
-- Includes the `JBOperatable` modifiers with support for [OpenZeppelin `Context`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Context.sol) to allow for (optional) meta-transaction support
 
-All features are backwards compatible with OpenZeppelin Ownable, this should be a drop-in replacement.
+A Juicebox variation on OpenZeppelin [`Ownable`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol) to enable owner-based access control incorporating Juicebox project ownership and `JBPermissions`.
 
-## Contracts 
-This repo contains 2 contracts, which one should you use:
+This implementation adds:
 
-### JBOwnable
-Does your contract not have any Ownable/access controls yet, use JBOwnable.
+- The ability to transfer contract ownership to a Juicebox Project instead of a specific address.
+- The ability to grant other addresses `OnlyOwner` access using `JBPermissions`.
+- Includes the `JBPermissioned` modifiers with support for OpenZeppelin [`Context`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Context.sol). This enables optional meta-transaction support.
 
-### JBOwnableOverride
-Does your contract extend a contract that you can't easily modify (ex. it comes from a package manager) and that contract inherits from OpenZeppelin Ownable? Use JBOwnableOverride.
+All features are backwards compatible with OpenZeppelin `Ownable`. This should be a drop-in replacement.
 
-__NOTICE: Only use JBOwnableOverride if you are overriding OpenZeppelin Ownable v4.7.0 or higher, otherwise JBOperatorStore functionality for `onlyOwner` will not work.__
+This repo contains 2 contracts:
+
+1. If your contract does not already use `Ownable` or access controls, use `JBOwnable`.
+2. If your contract extends a contract you cannot easily modify (e.g. a core dependency), and that contract inherits from OpenZeppelin `Ownable`, use `JBOwnableOverride`.
+
+**NOTICE:** Only use `JBOwnableOverride` if you are overriding OpenZeppelin `Ownable` v4.7.0 or higher. Otherwise, `JBPermissions` functionality for `onlyOwner` will not work.
+
+*If you're having trouble understanding this contract, take a look at the [core Juicebox contracts](https://github.com/bananapus/juice-contracts-v4) and the [documentation](https://docs.juicebox.money/) first. If you have questions, reach out on [Discord](https://discord.com/invite/ErQYmth4dS).*
+
+## Develop
+
+`juice-ownable` uses the [Foundry](https://github.com/foundry-rs/foundry) development toolchain for builds, tests, and deployments. To get set up, install [Foundry](https://github.com/foundry-rs/foundry):
+
+```bash
+curl -L https://foundry.paradigm.xyz | sh
+```
+
+You can download and install dependencies with:
+
+```bash
+forge install
+```
+
+If you run into trouble with `forge install`, try using `git submodule update --init --recursive` to ensure that nested submodules have been properly initialized.
+
+Some useful commands:
+
+| Command               | Description                                         |
+| --------------------- | --------------------------------------------------- |
+| `forge install`       | Install the dependencies.                           |
+| `forge build`         | Compile the contracts and write artifacts to `out`. |
+| `forge fmt`           | Lint.                                               |
+| `forge test`          | Run the tests.                                      |
+| `forge build --sizes` | Get contract sizes.                                 |
+| `forge coverage`      | Generate a test coverage report.                    |
+| `foundryup`           | Update foundry. Run this periodically.              |
+| `forge clean`         | Remove the build artifacts and cache directories.   |
+
+To learn more, visit the [Foundry Book](https://book.getfoundry.sh/) docs.
+
+We recommend using [Juan Blanco's solidity extension](https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity) for VSCode.

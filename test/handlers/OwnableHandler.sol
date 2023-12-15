@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.23;
 
 // import { Test } from "forge-std/Test.sol";
 import {CommonBase} from "forge-std/Base.sol";
@@ -7,14 +7,17 @@ import {StdCheats} from "forge-std/StdCheats.sol";
 import {StdUtils} from "forge-std/StdUtils.sol";
 import {console} from "forge-std/console.sol";
 
-import { MockOwnable, JBOwnableOverrides } from "../mocks/MockOwnable.sol";
-import { IJBOperatorStore, JBOperatorStore, JBOperatorData } from "@jbx-protocol/juice-contracts-v3/contracts/JBOperatorStore.sol";
-import { IJBProjects, JBProjects, JBProjectMetadata } from "@jbx-protocol/juice-contracts-v3/contracts/JBProjects.sol";
+import {MockOwnable, JBOwnableOverrides} from "../mocks/MockOwnable.sol";
+import {IJBPermissions} from "lib/juice-contracts-v4/src/interfaces/IJBPermissions.sol";
+import {JBPermissions} from "lib/juice-contracts-v4/src/JBPermissions.sol";
+import {JBPermissionsData} from "lib/juice-contracts-v4/src/structs/JBPermissionsData.sol";
+import {IJBProjects} from "lib/juice-contracts-v4/src/interfaces/IJBProjects.sol";
+import {JBProjects} from "lib/juice-contracts-v4/src/JBProjects.sol";
 
-contract OwnableHandler is CommonBase, StdCheats, StdUtils  {
-    IJBProjects immutable public projects;
-    IJBOperatorStore immutable public operatorStore;
-    MockOwnable immutable public ownable;
+contract OwnableHandler is CommonBase, StdCheats, StdUtils {
+    IJBProjects public immutable PROJECTS;
+    IJBPermissions public immutable PERMISSIONS;
+    MockOwnable public immutable OWNABLE;
 
     address[] public actors;
     address internal currentActor;
@@ -27,26 +30,20 @@ contract OwnableHandler is CommonBase, StdCheats, StdUtils  {
     }
 
     constructor() {
-        address _initialOwner = vm.addr(1);
-        // Deploy the operatorStore
-        operatorStore = new JBOperatorStore();
-        // Deploy the JBProjects
-        projects = new JBProjects(operatorStore);
-        // Deploy the JBOwnable
-        vm.prank(_initialOwner);
-        ownable = new MockOwnable(
-            projects,
-            operatorStore
-        );
+        address initialOwner = vm.addr(1);
+        // Deploy the permissions contract.j
+        PERMISSIONS = new JBPermissions();
+        // Deploy the `JBProjects` contract.
+        PROJECTS = new JBProjects(address(123));
+        // Deploy the `JBOwnable` contract.
+        vm.prank(initialOwner);
+        OWNABLE = new MockOwnable(PROJECTS, PERMISSIONS);
 
-        actors.push(_initialOwner);
+        actors.push(initialOwner);
         actors.push(address(420));
     }
 
-    function transferOwnershipToAddress(
-        uint256 actorIndexSeed,
-        address _newOwner
-    ) public useActor(actorIndexSeed) {
-        ownable.transferOwnership(_newOwner);
+    function transferOwnershipToAddress(uint256 actorIndexSeed, address _newOwner) public useActor(actorIndexSeed) {
+        OWNABLE.transferOwnership(_newOwner);
     }
 }

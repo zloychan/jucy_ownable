@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.23;
 
-import { Test } from "forge-std/Test.sol";
-import { OwnableHandler } from "./handlers/OwnableHandler.sol";
+import {Test} from "forge-std/Test.sol";
+import {OwnableHandler} from "./handlers/OwnableHandler.sol";
 
-import { MockOwnable, JBOwnableOverrides } from "./mocks/MockOwnable.sol";
-import { IJBOperatorStore, JBOperatorStore, JBOperatorData } from "@jbx-protocol/juice-contracts-v3/contracts/JBOperatorStore.sol";
-import {IJBProjects, JBProjects, JBProjectMetadata} from "@jbx-protocol/juice-contracts-v3/contracts/JBProjects.sol";
+import {MockOwnable} from "./mocks/MockOwnable.sol";
+import {JBOwnableOverrides} from "src/JBOwnableOverrides.sol";
+import {JBPermissions} from "lib/juice-contracts-v4/src/JBPermissions.sol";
+import {IJBPermissions} from "lib/juice-contracts-v4/src/interfaces/IJBPermissions.sol";
+import {JBPermissionsData} from "lib/juice-contracts-v4/src/structs/JBPermissionsData.sol";
+import {JBProjects} from "lib/juice-contracts-v4/src/JBProjects.sol";
+import {IJBProjects} from "lib/juice-contracts-v4/src/interfaces/IJBProjects.sol";
 
 contract OwnableInvariantTests is Test {
     OwnableHandler handler;
@@ -17,11 +21,10 @@ contract OwnableInvariantTests is Test {
     }
 
     function invariant_cantBelongToUserAndProject() public {
-        (address owner, uint88 projectId,) = handler.ownable().jbOwner();
+        (, uint88 projectId,) = handler.OWNABLE().jbOwner();
         assertTrue(
             ///owner == address(0) ||
             projectId == uint256(0)
         );
     }
-
 }

@@ -1,37 +1,27 @@
 // SPDX-License-Identifier: MIT
 // Juicebox variation on OpenZeppelin Ownable
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.23;
 
-import { JBOwnableOverrides, IJBProjects, IJBOperatorStore } from "./JBOwnableOverrides.sol";
+import {JBOwnableOverrides} from "./JBOwnableOverrides.sol";
+import {IJBProjects} from "lib/juice-contracts-v4/src/interfaces/IJBProjects.sol";
+import {IJBPermissions} from "lib/juice-contracts-v4/src/interfaces/IJBPermissions.sol";
 
 contract JBOwnable is JBOwnableOverrides {
-    event OwnershipTransferred(
-        address indexed previousOwner,
-        address indexed newOwner
-    );
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     /**
-      @param _projects the JBProjects to use to get the owner of the project
-      @param _operatorStore the operatorStore to use for the permissions
+     * @param projects The `IJBProjects` to use for tracking project ownership.
+     * @param permissions The `IJBPermissions` to use for managing permissions.
      */
-    constructor(
-        IJBProjects _projects,
-        IJBOperatorStore _operatorStore
-    ) JBOwnableOverrides(_projects, _operatorStore) {}
+    constructor(IJBProjects projects, IJBPermissions permissions) JBOwnableOverrides(projects, permissions) {}
 
-    /**
-     * @dev Throws if called by an account that is not the owner and does not have permission to act as the owner
-     */
+    /// @notice Reverts if called by an address that is not the owner and does not have permission from the owner.
     modifier onlyOwner() virtual {
         _checkOwner();
         _;
     }
 
-    function _emitTransferEvent(address previousOwner, address newOwner)
-        internal
-        virtual
-        override
-    {
+    function _emitTransferEvent(address previousOwner, address newOwner) internal virtual override {
         emit OwnershipTransferred(previousOwner, newOwner);
     }
 }
