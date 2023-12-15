@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Juicebox variation on OpenZeppelin Ownable
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.23;
 
 import {JBOwnableOverrides} from "./JBOwnableOverrides.sol";
 import {IJBProjects} from "lib/juice-contracts-v4/src/interfaces/IJBProjects.sol";

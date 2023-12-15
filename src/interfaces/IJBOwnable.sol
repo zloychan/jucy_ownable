@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.23;
 
 interface IJBOwnable {
     event PermissionIdChanged(uint8 newIndex);
