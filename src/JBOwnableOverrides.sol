@@ -198,7 +198,7 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
     }
 
     /**
-     * @notice Transfers this contract's ownership to an address (`newOwner`) OR a Juicebox project (`_projectId`).
+     * @notice Transfers this contract's ownership to an address (`newOwner`) OR a Juicebox project (`projectId`).
      * @dev Updates this contract's `JBOwner` owner information.
      * @dev If both `newOwner` and `projectId` are set, this will revert.
      * @dev Internal function without access restriction.
@@ -218,7 +218,7 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         // This is to prevent permissions clashes for the new user/owner.
         jbOwner = JBOwner({owner: newOwner, projectId: projectId, permissionId: 0});
         // Emit a transfer event with the new owner's address.
-        _emitTransferEvent(_oldOwner, projectId == 0 ? _newOwner : PROJECTS.ownerOf(projectId));
+        _emitTransferEvent(_oldOwner, projectId == 0 ? newOwner : PROJECTS.ownerOf(projectId));
     }
 
     //*********************************************************************//

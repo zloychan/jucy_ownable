@@ -10,8 +10,8 @@ contract MockOwnable is JBOwnable {
 
     uint256 permission;
 
-    function setPermission(uint256 _permission) external {
-        permission = _permission;
+    function setPermission(uint256 newPermission) external {
+        permission = newPermission;
     }
 
     constructor(IJBProjects projects, IJBPermissions permissions) JBOwnable(projects, permissions) {}

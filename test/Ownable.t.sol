@@ -327,7 +327,7 @@ contract OwnableTest is Test {
 
         // The owner gives permission to the caller
         vm.prank(_projectOwner);
-        ERMISSIONS.setPermissionsFor(
+        PERMISSIONS.setPermissionsFor(
             JBPermissionsData({operator: _callerAddress, domain: _projectId, permissionIds: _permissionIds})
         );
 
