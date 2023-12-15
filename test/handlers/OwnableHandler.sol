@@ -15,8 +15,8 @@ import {IJBProjects} from "lib/juice-contracts-v4/src/interfaces/IJBProjects.sol
 import {JBProjects} from "lib/juice-contracts-v4/src/JBProjects.sol";
 
 contract OwnableHandler is CommonBase, StdCheats, StdUtils {
-    IJBProjects public immutable projects;
-    IJBPermissions public immutable permissions;
+    IJBProjects public immutable PROJECTS;
+    IJBPermissions public immutable PERMISSIONS;
     MockOwnable public immutable ownable;
 
     address[] public actors;
@@ -32,12 +32,12 @@ contract OwnableHandler is CommonBase, StdCheats, StdUtils {
     constructor() {
         address _initialOwner = vm.addr(1);
         // Deploy the permissions
-        permissions = new JBPermissions();
+        PERMISSIONS = new JBPermissions();
         // Deploy the JBProjects
-        projects = new JBProjects(permissions);
+        PROJECTS = new JBProjects(PERMISSIONS);
         // Deploy the JBOwnable
         vm.prank(_initialOwner);
-        ownable = new MockOwnable(projects, permissions);
+        ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
         actors.push(_initialOwner);
         actors.push(address(420));

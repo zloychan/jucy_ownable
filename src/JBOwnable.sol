@@ -8,10 +8,10 @@ contract JBOwnable is JBOwnableOverrides {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     /**
-     * @param _projects the JBProjects to use to get the owner of the project
-     *   @param _permissions the permissions to use for the permissions
+     * @param projects the JBProjects to use to get the owner of the project
+     *   @param permissions the permissions to use for the permissions
      */
-    constructor(IJBProjects _projects, IJBPermissions _permissions) JBOwnableOverrides(_projects, _permissions) {}
+    constructor(IJBProjects projects, IJBPermissions permissions) JBOwnableOverrides(projects, permissions) {}
 
     /**
      * @dev Throws if called by an account that is not the owner and does not have permission to act as the owner

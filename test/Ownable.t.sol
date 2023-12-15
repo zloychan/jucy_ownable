@@ -11,8 +11,8 @@ import {JBPermissionsData} from "lib/juice-contracts-v4/src/structs/JBPermission
 import {IJBProjects} from "lib/juice-contracts-v4/src/interfaces/IJBProjects.sol";
 
 contract OwnableTest is Test {
-    IJBProjects projects;
-    IJBPermissions permissions;
+    IJBProjects PROJECTS;
+    IJBPermissions PERMISSIONS;
 
     modifier isNotContract(address _a) {
         uint256 size;
@@ -25,9 +25,9 @@ contract OwnableTest is Test {
 
     function setUp() public {
         // Deploy the permissions
-        permissions = new JBPermissions();
+        PERMISSIONS = new JBPermissions();
         // Deploy the JBProjects
-        projects = new JBProjects(permissions);
+        PROJECTS = new JBProjects(PERMISSIONS);
     }
 
     function testDeployerBecomesOwner(
@@ -42,7 +42,7 @@ contract OwnableTest is Test {
         vm.assume(_projectOwner != address(0));
 
         vm.prank(_owner);
-        MockOwnable ownable = new MockOwnable(projects, permissions);
+        MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
         assertEq(_owner, ownable.owner(), "Deployer is not the owner");
     }
@@ -61,10 +61,10 @@ contract OwnableTest is Test {
         vm.assume(_newProjectOwner != address(0));
 
         // Create a project for the owner
-        uint256 _projectId = projects.createFor(_projectOwner, "");
+        uint256 _projectId = PROJECTS.createFor(_projectOwner, "");
 
         // Create the Ownable contract
-        MockOwnable ownable = new MockOwnable(projects, permissions);
+        MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
         // Transfer ownership to the project owner
         ownable.transferOwnershipToProject(_projectId);
@@ -74,7 +74,7 @@ contract OwnableTest is Test {
 
         // Transfer the project ownership
         vm.prank(_projectOwner);
-        projects.transferFrom(_projectOwner, _newProjectOwner, _projectId);
+        PROJECTS.transferFrom(_projectOwner, _newProjectOwner, _projectId);
 
         // Make sure the Ownable now also transferred to the new project owner
         assertEq(_newProjectOwner, ownable.owner(), "Ownable did not follow the Project owner");
@@ -94,10 +94,10 @@ contract OwnableTest is Test {
         vm.assume(_projectOwner != address(0));
 
         // Create a project for the owner
-        uint256 _projectId = projects.createFor(_projectOwner, "");
+        uint256 _projectId = PROJECTS.createFor(_projectOwner, "");
 
         // Create the Ownable contract
-        MockOwnable ownable = new MockOwnable(projects, permissions);
+        MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
         // Transfer ownership to the project owner
         ownable.transferOwnershipToProject(_projectId);
@@ -110,14 +110,14 @@ contract OwnableTest is Test {
         // Make sure it transferred to the new owner
         assertEq(_newOwnableOwner, ownable.owner());
         // Sanity check to make sure it was only the Ownable that changed and not the project as well
-        assertEq(projects.ownerOf(_projectId), _projectOwner);
+        assertEq(PROJECTS.ownerOf(_projectId), _projectOwner);
     }
 
     function testCantTransferToProjectZero(address _deployer) public {
         vm.startPrank(_deployer);
 
         // Create the Ownable contract
-        MockOwnable ownable = new MockOwnable(projects, permissions);
+        MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
         vm.expectRevert(
             abi.encodeWithSelector(
@@ -136,7 +136,7 @@ contract OwnableTest is Test {
         vm.startPrank(_deployer);
 
         // Create the Ownable contract
-        MockOwnable ownable = new MockOwnable(projects, permissions);
+        MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
         vm.expectRevert(
             abi.encodeWithSelector(
@@ -167,11 +167,11 @@ contract OwnableTest is Test {
         vm.assume(_newProjectOwner != address(0));
 
         // Create a project for the owner
-        uint256 _projectId = projects.createFor(_projectOwner, "");
+        uint256 _projectId = PROJECTS.createFor(_projectOwner, "");
 
         // Create the Ownable contract
         vm.prank(_deployer);
-        MockOwnable ownable = new MockOwnable(projects, permissions);
+        MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
         // Make sure the deployer owns it
         assertEq(_deployer, ownable.owner(), "Deployer is not the owner");
@@ -181,12 +181,12 @@ contract OwnableTest is Test {
         ownable.transferOwnershipToProject(_projectId);
 
         // Make sure the deployer owns it
-        assertEq(projects.ownerOf(_projectId), ownable.owner(), "Project owner is not the owner");
+        assertEq(PROJECTS.ownerOf(_projectId), ownable.owner(), "Project owner is not the owner");
 
         // Transfer the project ownership
         vm.prank(_projectOwner);
-        projects.transferFrom(_projectOwner, _newProjectOwner, _projectId);
-        assertEq(projects.ownerOf(_projectId), _newProjectOwner);
+        PROJECTS.transferFrom(_projectOwner, _newProjectOwner, _projectId);
+        assertEq(PROJECTS.ownerOf(_projectId), _newProjectOwner);
 
         // Make sure the Ownable now also transferred to the new project owner
         assertEq(_newProjectOwner, ownable.owner(), "Ownable followed the projectOwner but its overriden");
@@ -196,7 +196,7 @@ contract OwnableTest is Test {
         vm.assume(_owner != address(0));
 
         // Create the Ownable contract
-        MockOwnable ownable = new MockOwnable(projects, permissions);
+        MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
         // Transfer ownership to the project owner
         ownable.transferOwnership(_owner);
@@ -213,10 +213,10 @@ contract OwnableTest is Test {
         vm.assume(_projectOwner != address(0));
 
         // Create a project for the owner
-        uint256 _projectId = projects.createFor(_projectOwner, "");
+        uint256 _projectId = PROJECTS.createFor(_projectOwner, "");
 
         // Create the Ownable contract
-        MockOwnable ownable = new MockOwnable(projects, permissions);
+        MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
         // Transfer ownership to the project owner
         ownable.transferOwnershipToProject(_projectId);
@@ -231,7 +231,7 @@ contract OwnableTest is Test {
     function testJBOwnablePermissions(
         address _projectOwner,
         address _callerAddress,
-        uint8 _permissionIndexRequired,
+        uint8 _permissionIdRequired,
         uint8[] memory _permissionsToGrant
     )
         public
@@ -243,10 +243,10 @@ contract OwnableTest is Test {
         vm.assume(_permissionsToGrant.length < 5);
 
         // Create a project for the owner
-        uint256 _projectId = projects.createFor(_projectOwner, "");
+        uint256 _projectId = PROJECTS.createFor(_projectOwner, "");
 
         // Create the Ownable contract
-        MockOwnable ownable = new MockOwnable(projects, permissions);
+        MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
         // Transfer ownership to the project owner
         ownable.transferOwnershipToProject(_projectId);
@@ -254,7 +254,7 @@ contract OwnableTest is Test {
 
         // Set the permission that is required
         vm.prank(_projectOwner);
-        ownable.setPermissionIndex(_permissionIndexRequired);
+        ownable.setPermissionId(_permissionIdRequired);
 
         // Attempt to call the protected method without permission
         vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.UNAUTHORIZED.selector));
@@ -263,17 +263,17 @@ contract OwnableTest is Test {
 
         // Give permission
         bool _shouldHavePermission;
-        uint256[] memory _permissionIndexes = new uint256[](_permissionsToGrant.length);
+        uint256[] memory _permissionIds = new uint256[](_permissionsToGrant.length);
         for (uint256 i; i < _permissionsToGrant.length; i++) {
             // Check if the permission we need is in the set
-            if (_permissionsToGrant[i] == _permissionIndexRequired) _shouldHavePermission = true;
-            _permissionIndexes[i] = _permissionsToGrant[i];
+            if (_permissionsToGrant[i] == _permissionIdRequired) _shouldHavePermission = true;
+            _permissionIds[i] = _permissionsToGrant[i];
         }
 
         // The owner gives permission to the caller
         vm.prank(_projectOwner);
-        permissions.setPermissionsFor(
-            JBPermissionsData({operator: _callerAddress, domain: _projectId, permissionIndexes: _permissionIndexes})
+        PERMISSIONS.setPermissionsFor(
+            JBPermissionsData({operator: _callerAddress, domain: _projectId, permissionIds: _permissionIds})
         );
 
         if (!_shouldHavePermission) {
@@ -287,7 +287,7 @@ contract OwnableTest is Test {
     function testJBOwnablePermissionsRequiredModifier(
         address _projectOwner,
         address _callerAddress,
-        uint8 _permissionIndexRequired,
+        uint8 _permissionIdRequired,
         uint8[] memory _permissionsToGrant
     )
         public
@@ -299,17 +299,17 @@ contract OwnableTest is Test {
         vm.assume(_permissionsToGrant.length < 5);
 
         // Create a project for the owner
-        uint256 _projectId = projects.createFor(_projectOwner, "");
+        uint256 _projectId = PROJECTS.createFor(_projectOwner, "");
 
         // Create the Ownable contract
-        MockOwnable ownable = new MockOwnable(projects, permissions);
+        MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
         // Transfer ownership to the project owner
         ownable.transferOwnershipToProject(_projectId);
         assertEq(_projectOwner, ownable.owner(), "Project owner is not the owner");
 
         // Set the permission that is required
-        ownable.setPermission(_permissionIndexRequired);
+        ownable.setPermission(_permissionIdRequired);
 
         // Attempt to call the protected method without permission
         vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.UNAUTHORIZED.selector));
@@ -318,17 +318,17 @@ contract OwnableTest is Test {
 
         // Give permission
         bool _shouldHavePermission;
-        uint256[] memory _permissionIndexes = new uint256[](_permissionsToGrant.length);
+        uint256[] memory _permissionIds = new uint256[](_permissionsToGrant.length);
         for (uint256 i; i < _permissionsToGrant.length; i++) {
             // Check if the permission we need is in the set
-            if (_permissionsToGrant[i] == _permissionIndexRequired) _shouldHavePermission = true;
-            _permissionIndexes[i] = _permissionsToGrant[i];
+            if (_permissionsToGrant[i] == _permissionIdRequired) _shouldHavePermission = true;
+            _permissionIds[i] = _permissionsToGrant[i];
         }
 
         // The owner gives permission to the caller
         vm.prank(_projectOwner);
-        permissions.setPermissionsFor(
-            JBPermissionsData({operator: _callerAddress, domain: _projectId, permissionIndexes: _permissionIndexes})
+        ERMISSIONS.setPermissionsFor(
+            JBPermissionsData({operator: _callerAddress, domain: _projectId, permissionIds: _permissionIds})
         );
 
         if (!_shouldHavePermission) {

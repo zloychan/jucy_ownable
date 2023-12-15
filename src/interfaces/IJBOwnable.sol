@@ -2,15 +2,11 @@
 pragma solidity ^0.8.0;
 
 interface IJBOwnable {
-    // event OwnershipTransferred(
-    //     address indexed previousOwner,
-    //     address indexed newOwner
-    // );
-    event PermissionIndexChanged(uint8 newIndex);
+    event PermissionIdChanged(uint8 newIndex);
 
-    function jbOwner() external view returns (address owner, uint88 projectOwner, uint8 permissionIndex);
+    function jbOwner() external view returns (address owner, uint88 projectOwner, uint8 permissionId);
 
-    function transferOwnershipToProject(uint256 _projectId) external;
+    function transferOwnershipToProject(uint256 projectId) external;
 
-    function setPermissionIndex(uint8 _permissionIndex) external;
+    function setPermissionId(uint8 permissionId) external;
 }
