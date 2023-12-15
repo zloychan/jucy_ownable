@@ -90,7 +90,11 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
             revert UNAUTHORIZED();
         }
 
-        _requirePermission({account: ownerInfo.projectId == 0 ? ownerInfo.owner : PROJECTS.ownerOf(ownerInfo.projectId), projectId: ownerInfo.projectId, permissionId: permissionId});
+        _requirePermission({
+            account: ownerInfo.projectId == 0 ? ownerInfo.owner : PROJECTS.ownerOf(ownerInfo.projectId),
+            projectId: ownerInfo.projectId,
+            permissionId: permissionId
+        });
         _;
     }
 
@@ -227,14 +231,18 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
     function _checkOwner() internal view virtual {
         JBOwner memory ownerInfo = jbOwner;
 
-        _requirePermission({ account: ownerInfo.projectId == 0 ? ownerInfo.owner : PROJECTS.ownerOf(ownerInfo.projectId), projectId: ownerInfo.projectId, permissionId: ownerInfo.permissionId});
+        _requirePermission({
+            account: ownerInfo.projectId == 0 ? ownerInfo.owner : PROJECTS.ownerOf(ownerInfo.projectId),
+            projectId: ownerInfo.projectId,
+            permissionId: ownerInfo.permissionId
+        });
     }
 
     /**
      * @notice Only allows the specified account or an operator with the specified permission ID from that account to
      * proceed.
      * @param account The account to allow.
-     * @param projectId The ID of the project to look for an operator within. 
+     * @param projectId The ID of the project to look for an operator within.
      * @param permissionId The ID of the permission to check for.
      */
     function _requirePermission(address account, uint256 projectId, uint256 permissionId) internal view virtual {

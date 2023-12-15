@@ -15,7 +15,6 @@ contract JBOwnable is JBOwnableOverrides {
      */
     constructor(IJBProjects projects, IJBPermissions permissions) JBOwnableOverrides(projects, permissions) {}
 
-
     /// @notice Reverts if called by an address that is not the owner and does not have permission from the owner.
     modifier onlyOwner() virtual {
         _checkOwner();
