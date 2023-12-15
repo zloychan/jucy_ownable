@@ -4,7 +4,8 @@ pragma solidity ^0.8.13;
 import {Test} from "forge-std/Test.sol";
 import {OwnableHandler} from "./handlers/OwnableHandler.sol";
 
-import {MockOwnable, JBOwnableOverrides} from "./mocks/MockOwnable.sol";
+import {MockOwnable} from "./mocks/MockOwnable.sol";
+import {JBOwnableOverrides} from "src/JBOwnableOverrides.sol";
 import {JBPermissions} from "lib/juice-contracts-v4/src/JBPermissions.sol";
 import {IJBPermissions} from "lib/juice-contracts-v4/src/interfaces/IJBPermissions.sol";
 import {JBPermissionsData} from "lib/juice-contracts-v4/src/structs/JBPermissionsData.sol";
