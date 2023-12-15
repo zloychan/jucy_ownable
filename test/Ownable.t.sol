@@ -28,7 +28,7 @@ contract OwnableTest is Test {
         // Deploy the permissions contract.
         PERMISSIONS = new JBPermissions();
         // Deploy the projects contract.
-        PROJECTS = new JBProjects(PERMISSIONS);
+        PROJECTS = new JBProjects(address(123));
     }
 
     function testDeployerBecomesOwner(
@@ -62,20 +62,20 @@ contract OwnableTest is Test {
         vm.assume(newProjectOwner != address(0));
 
         // Create a project for the owner.
-        uint256 _projectId = PROJECTS.createFor(projectOwner, "");
+        uint256 projectId = PROJECTS.createFor(projectOwner);
 
         // Create the `Ownable` contract.
         MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
         // Transfer ownership to the project's owner.
-        ownable.transferOwnershipToProject(_projectId);
+        ownable.transferOwnershipToProject(projectId);
 
         // Make sure the deployer owns it.
         assertEq(projectOwner, ownable.owner(), "Deployer is not the owner.");
 
         // Transfer the project's ownership.
         vm.prank(projectOwner);
-        PROJECTS.transferFrom(projectOwner, newProjectOwner, _projectId);
+        PROJECTS.transferFrom(projectOwner, newProjectOwner, projectId);
 
         // Make sure the `Ownable` contract has also been transferred to the new project owner.
         assertEq(newProjectOwner, ownable.owner(), "Ownable did not follow the Project owner.");
@@ -95,7 +95,7 @@ contract OwnableTest is Test {
         vm.assume(projectOwner != address(0));
 
         // Create a project for the owner.
-        uint256 _projectId = PROJECTS.createFor(projectOwner, "");
+        uint256 _projectId = PROJECTS.createFor(projectOwner);
 
         // Create the `Ownable` contract.
         MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
@@ -168,7 +168,7 @@ contract OwnableTest is Test {
         vm.assume(newProjectOwner != address(0));
 
         // Create a project for the owner.
-        uint256 _projectId = PROJECTS.createFor(projectOwner, "");
+        uint256 _projectId = PROJECTS.createFor(projectOwner);
 
         // Create the `Ownable` contract.
         vm.prank(deployer);
@@ -214,7 +214,7 @@ contract OwnableTest is Test {
         vm.assume(projectOwner != address(0));
 
         // Create a project for the owner.
-        uint256 _projectId = PROJECTS.createFor(projectOwner, "");
+        uint256 _projectId = PROJECTS.createFor(projectOwner);
 
         // Create the `Ownable` contract.
         MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
@@ -244,7 +244,7 @@ contract OwnableTest is Test {
         vm.assume(permissionIdsToGrant.length < 5);
 
         // Create a project for the owner.
-        uint256 _projectId = PROJECTS.createFor(projectOwner, "");
+        uint256 _projectId = PROJECTS.createFor(projectOwner);
 
         // Create the `Ownable` contract.
         MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
@@ -273,8 +273,10 @@ contract OwnableTest is Test {
 
         // The owner gives permission to the caller.
         vm.prank(projectOwner);
-        PERMISSIONS.setPermissionsFor(
-            JBPermissionsData({operator: callerAddress, domain: _projectId, permissionIds: _permissionIds})
+        PERMISSIONS.setPermissionsFor({
+            account: projectOwner,
+            permissionsData: JBPermissionsData({operator: callerAddress, projectId: _projectId, permissionIds: _permissionIds})
+        }
         );
 
         if (!_shouldHavePermission) {
@@ -300,7 +302,7 @@ contract OwnableTest is Test {
         vm.assume(permissionIdsToGrant.length < 5);
 
         // Create a project for the owner.
-        uint256 _projectId = PROJECTS.createFor(projectOwner, "");
+        uint256 _projectId = PROJECTS.createFor(projectOwner);
 
         // Create the `Ownable` contract.
         MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
@@ -328,9 +330,10 @@ contract OwnableTest is Test {
 
         // The owner gives permission to the caller.
         vm.prank(projectOwner);
-        PERMISSIONS.setPermissionsFor(
-            JBPermissionsData({operator: callerAddress, domain: _projectId, permissionIds: _permissionIds})
-        );
+        PERMISSIONS.setPermissionsFor({
+            account: projectOwner,
+            permissionsData: JBPermissionsData({operator: callerAddress, projectId: _projectId, permissionIds: _permissionIds})
+        });
 
         if (!_shouldHavePermission) {
             vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.UNAUTHORIZED.selector));

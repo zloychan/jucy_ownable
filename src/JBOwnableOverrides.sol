@@ -83,16 +83,14 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
      * @param permissionId The ID of the permission to check for.
      */
     modifier requirePermissionFromProject(uint256 permissionId) {
-        JBOwner memory _ownerInfo = jbOwner;
+        JBOwner memory ownerInfo = jbOwner;
 
         // If the owner is not a project then this should always revert
-        if (_ownerInfo.projectId == 0) {
+        if (ownerInfo.projectId == 0) {
             revert UNAUTHORIZED();
         }
 
-        address _owner = _ownerInfo.projectId == 0 ? _ownerInfo.owner : PROJECTS.ownerOf(_ownerInfo.projectId);
-
-        _requirePermission(_owner, _ownerInfo.projectId, permissionId);
+        _requirePermission({account: ownerInfo.projectId == 0 ? ownerInfo.owner : PROJECTS.ownerOf(ownerInfo.projectId), projectId: ownerInfo.projectId, permissionId: permissionId});
         _;
     }
 
@@ -120,13 +118,13 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
 
     /// @notice Returns the owner's address based on this contract's `JBOwner` owner information.
     function owner() public view virtual returns (address) {
-        JBOwner memory _ownerInfo = jbOwner;
+        JBOwner memory ownerInfo = jbOwner;
 
-        if (_ownerInfo.projectId == 0) {
-            return _ownerInfo.owner;
+        if (ownerInfo.projectId == 0) {
+            return ownerInfo.owner;
         }
 
-        return PROJECTS.ownerOf(_ownerInfo.projectId);
+        return PROJECTS.ownerOf(ownerInfo.projectId);
     }
 
     /// @notice Gives up ownership of this contract, making it impossible to call `onlyOwner`/`_checkOwner` functions.
@@ -211,14 +209,14 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
             revert INVALID_NEW_OWNER(newOwner, projectId);
         }
         // Load the owner information from storage.
-        JBOwner memory _ownerInfo = jbOwner;
+        JBOwner memory ownerInfo = jbOwner;
         // Get the address of the old owner.
-        address _oldOwner = _ownerInfo.projectId == 0 ? _ownerInfo.owner : PROJECTS.ownerOf(_ownerInfo.projectId);
+        address oldOwner = ownerInfo.projectId == 0 ? ownerInfo.owner : PROJECTS.ownerOf(ownerInfo.projectId);
         // Update the stored owner information to the new owner and reset the `permissionId`.
         // This is to prevent permissions clashes for the new user/owner.
         jbOwner = JBOwner({owner: newOwner, projectId: projectId, permissionId: 0});
         // Emit a transfer event with the new owner's address.
-        _emitTransferEvent(_oldOwner, projectId == 0 ? newOwner : PROJECTS.ownerOf(projectId));
+        _emitTransferEvent(oldOwner, projectId == 0 ? newOwner : PROJECTS.ownerOf(projectId));
     }
 
     //*********************************************************************//
@@ -227,25 +225,23 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
 
     /// @notice Reverts if the sender is not the owner.
     function _checkOwner() internal view virtual {
-        JBOwner memory _ownerInfo = jbOwner;
+        JBOwner memory ownerInfo = jbOwner;
 
-        address _owner = _ownerInfo.projectId == 0 ? _ownerInfo.owner : PROJECTS.ownerOf(_ownerInfo.projectId);
-
-        _requirePermission(_owner, _ownerInfo.projectId, _ownerInfo.permissionId);
+        _requirePermission({ account: ownerInfo.projectId == 0 ? ownerInfo.owner : PROJECTS.ownerOf(ownerInfo.projectId), projectId: ownerInfo.projectId, permissionId: ownerInfo.permissionId});
     }
 
     /**
      * @notice Only allows the specified account or an operator with the specified permission ID from that account to
      * proceed.
      * @param account The account to allow.
-     * @param domain The domain namespace to look for an operator within. TODO: remove
+     * @param projectId The ID of the project to look for an operator within. 
      * @param permissionId The ID of the permission to check for.
      */
-    function _requirePermission(address account, uint256 domain, uint256 permissionId) internal view virtual {
-        address _sender = _msgSender();
+    function _requirePermission(address account, uint256 projectId, uint256 permissionId) internal view virtual {
+        address sender = _msgSender();
         if (
-            _sender != account && !PERMISSIONS.hasPermission(_sender, account, domain, permissionId)
-                && !PERMISSIONS.hasPermission(_sender, account, 0, permissionId)
+            sender != account && !PERMISSIONS.hasPermission(sender, account, projectId, permissionId)
+                && !PERMISSIONS.hasPermission(sender, account, 0, permissionId)
         ) revert UNAUTHORIZED();
     }
 
@@ -253,13 +249,13 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
      * @notice If the `override` flag is true, proceed. Otherwise, only allows the specified account or an operator with
      * the specified permission ID from that account to proceed.
      * @param account The account to allow.
-     * @param domain The domain namespace to look for an operator within. TODO: remove
+     * @param projectId The ID of the pproject to look for an operator within. TODO: remove
      * @param permissionId The ID of the permission to check for.
      * @param overrideFlag If this is true, override the check and proceed.
      */
     function _requirePermissionAllowingOverride(
         address account,
-        uint256 domain,
+        uint256 projectId,
         uint256 permissionId,
         bool overrideFlag
     )
@@ -270,7 +266,7 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         // Return early if the override flag is true.
         if (overrideFlag) return;
         // Otherwise, perform a standard check.
-        _requirePermission(account, domain, permissionId);
+        _requirePermission(account, projectId, permissionId);
     }
 
     function _emitTransferEvent(address previousOwner, address newOwner) internal virtual;
