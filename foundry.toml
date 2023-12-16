@@ -1,6 +1,8 @@
 [profile.default]
 solc = '0.8.23'
 evm_version = 'paris'                   # Required for L2s (Optimism, Arbitrum, etc.)
+optimizer_runs = 1000000000
+runs = 4096
 
 [fmt]
 number_underscore = "thousands"
