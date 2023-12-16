@@ -9,10 +9,8 @@ import {IJBPermissions} from "lib/juice-contracts-v4/src/interfaces/IJBPermissio
 contract JBOwnable is JBOwnableOverrides {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    /**
-     * @param projects The `IJBProjects` to use for tracking project ownership.
-     * @param permissions The `IJBPermissions` to use for managing permissions.
-     */
+    /// @param projects The `IJBProjects` to use for tracking project ownership.
+    /// @param permissions The `IJBPermissions` to use for managing permissions.
     constructor(IJBProjects projects, IJBPermissions permissions) JBOwnableOverrides(projects, permissions) {}
 
     /// @notice Reverts if called by an address that is not the owner and does not have permission from the owner.

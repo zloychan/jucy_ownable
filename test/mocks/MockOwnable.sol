@@ -8,10 +8,10 @@ import {IJBPermissions} from "lib/juice-contracts-v4/src/interfaces/IJBPermissio
 contract MockOwnable is JBOwnable {
     event ProtectedMethodCalled();
 
-    uint256 permission;
+    uint256 permissionId;
 
-    function setPermission(uint256 newPermission) external {
-        permission = newPermission;
+    function setPermission(uint256 newPermissionId) external {
+        permissionId = newPermissionId;
     }
 
     constructor(IJBProjects projects, IJBPermissions permissions) JBOwnable(projects, permissions) {}
@@ -20,7 +20,15 @@ contract MockOwnable is JBOwnable {
         emit ProtectedMethodCalled();
     }
 
-    function protectedMethodWithRequirePermission() external requirePermissionFromProject(permission) {
+    function protectedMethodWithRequirePermission() external {
+        uint256 projectId = jbOwner.projectId;
+
+        _requirePermissionBy({
+            account: PROJECTS.ownerOf(projectId),
+            projectId: projectId,
+            permissionId: permissionId
+        });
+
         emit ProtectedMethodCalled();
     }
 }
