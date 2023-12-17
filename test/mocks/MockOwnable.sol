@@ -23,7 +23,7 @@ contract MockOwnable is JBOwnable {
     function protectedMethodWithRequirePermission() external {
         uint256 projectId = jbOwner.projectId;
 
-        _requirePermissionBy({
+        _requirePermissionFrom({
             account: PROJECTS.ownerOf(projectId),
             projectId: projectId,
             permissionId: permissionId

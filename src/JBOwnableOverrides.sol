@@ -151,7 +151,7 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
     function _checkOwner() internal view virtual {
         JBOwner memory ownerInfo = jbOwner;
 
-        _requirePermissionBy({
+        _requirePermissionFrom({
             account: ownerInfo.projectId == 0 ? ownerInfo.owner : PROJECTS.ownerOf(ownerInfo.projectId),
             projectId: ownerInfo.projectId,
             permissionId: ownerInfo.permissionId
@@ -162,7 +162,7 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
     /// @param account The account to allow.
     /// @param projectId The ID of the project to look for an operator within.
     /// @param permissionId The ID of the permission to check for.
-    function _requirePermissionBy(address account, uint256 projectId, uint256 permissionId) internal view virtual {
+    function _requirePermissionFrom(address account, uint256 projectId, uint256 permissionId) internal view virtual {
         address sender = _msgSender();
         if (
             sender != account && !PERMISSIONS.hasPermission(sender, account, projectId, permissionId)
@@ -175,7 +175,7 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
     /// @param projectId The ID of the pproject to look for an operator within. TODO: remove
     /// @param permissionId The ID of the permission to check for.
     /// @param alsoGrantAccessIf An override condition which will allow access regardless of permissions.     */
-    function _requirePermissionAllowingOverrideBy(
+    function _requirePermissionAllowingOverrideFrom(
         address account,
         uint256 projectId,
         uint256 permissionId,
@@ -188,7 +188,7 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         // Return early if the override flag is true.
         if (alsoGrantAccessIf) return;
         // Otherwise, perform a standard check.
-        _requirePermissionBy(account, projectId, permissionId);
+        _requirePermissionFrom(account, projectId, permissionId);
     }
 
     function _emitTransferEvent(address previousOwner, address newOwner) internal virtual;
