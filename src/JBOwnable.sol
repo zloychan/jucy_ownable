@@ -2,9 +2,10 @@
 // Juicebox variation on OpenZeppelin Ownable
 pragma solidity ^0.8.23;
 
-import {JBOwnableOverrides} from "./JBOwnableOverrides.sol";
 import {IJBProjects} from "lib/juice-contracts-v4/src/interfaces/IJBProjects.sol";
 import {IJBPermissions} from "lib/juice-contracts-v4/src/interfaces/IJBPermissions.sol";
+
+import {JBOwnableOverrides} from "./JBOwnableOverrides.sol";
 
 contract JBOwnable is JBOwnableOverrides {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
