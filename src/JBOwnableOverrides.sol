@@ -2,13 +2,13 @@
 // Juicebox variation on OpenZeppelin Ownable
 pragma solidity ^0.8.23;
 
-import {JBOwner} from "./struct/JBOwner.sol";
-import {IJBOwnable} from "./interfaces/IJBOwnable.sol";
-
+import {Context} from "lib/openzeppelin-contracts/contracts/utils/Context.sol";
 import {IJBPermissioned} from "lib/juice-contracts-v4/src/interfaces/IJBPermissioned.sol";
 import {IJBPermissions} from "lib/juice-contracts-v4/src/interfaces/IJBPermissions.sol";
 import {IJBProjects} from "lib/juice-contracts-v4/src/interfaces/IJBProjects.sol";
-import {Context} from "@openzeppelin/contracts/utils/Context.sol";
+
+import {JBOwner} from "./struct/JBOwner.sol";
+import {IJBOwnable} from "./interfaces/IJBOwnable.sol";
 
 /// @notice Access control module to grant exclusive access to a specified address (the owner) for specific functions. The owner can also grant access permissions to other addresses via `JBPermissions`.
 /// @dev Inherit this contract to make the `onlyOwner` modifier available. When applied to a function, this modifier restricts use to the owner and addresses with the appropriate permission from the owner.
