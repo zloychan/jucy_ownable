@@ -3,8 +3,8 @@
 pragma solidity ^0.8.23;
 
 import {Context} from "lib/openzeppelin-contracts/contracts/utils/Context.sol";
-import {IJBPermissioned} from "lib/juice-contracts-v4/src/interfaces/IJBPermissioned.sol";
 import {IJBPermissions} from "lib/juice-contracts-v4/src/interfaces/IJBPermissions.sol";
+import {IJBPermissioned} from "lib/juice-contracts-v4/src/interfaces/IJBPermissioned.sol";
 import {IJBProjects} from "lib/juice-contracts-v4/src/interfaces/IJBProjects.sol";
 
 import {JBOwner} from "./struct/JBOwner.sol";
