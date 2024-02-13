@@ -48,5 +48,3 @@ Some useful commands:
 | `forge clean`         | Remove the build artifacts and cache directories.   |
 
 To learn more, visit the [Foundry Book](https://book.getfoundry.sh/) docs.
-
-We recommend using [Juan Blanco's solidity extension](https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity) for VSCode.
