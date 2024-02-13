@@ -2,7 +2,7 @@
 // Juicebox variation on OpenZeppelin Ownable
 pragma solidity ^0.8.23;
 
-import {Context} from "lib/openzeppelin-contracts/contracts/utils/Context.sol";
+import {Context} from "@openzeppelin/contracts/utils/Context.sol";
 import {IJBPermissions} from "lib/juice-contracts-v4/src/interfaces/IJBPermissions.sol";
 import {IJBPermissioned} from "lib/juice-contracts-v4/src/interfaces/IJBPermissioned.sol";
 import {IJBProjects} from "lib/juice-contracts-v4/src/interfaces/IJBProjects.sol";
