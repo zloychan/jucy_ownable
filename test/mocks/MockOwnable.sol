@@ -2,8 +2,8 @@
 pragma solidity ^0.8.23;
 
 import {JBOwnable, JBOwnableOverrides} from "../../src/JBOwnable.sol";
-import {IJBProjects} from "lib/juice-contracts-v4/src/interfaces/IJBProjects.sol";
-import {IJBPermissions} from "lib/juice-contracts-v4/src/interfaces/IJBPermissions.sol";
+import {IJBProjects} from "@bananapus/core/src/interfaces/IJBProjects.sol";
+import {IJBPermissions} from "@bananapus/core/src/interfaces/IJBPermissions.sol";
 
 contract MockOwnable is JBOwnable {
     event ProtectedMethodCalled();
