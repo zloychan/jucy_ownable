@@ -120,11 +120,7 @@ contract OwnableTest is Test {
         // Create the `Ownable` contract.
         MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                JBOwnableOverrides.INVALID_NEW_OWNER.selector
-            )
-        );
+        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.INVALID_NEW_OWNER.selector));
 
         // Transfer ownership to project ID 0 (should revert).
         ownable.transferOwnershipToProject(0);
@@ -137,11 +133,7 @@ contract OwnableTest is Test {
         // Create the `Ownable` contract.
         MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                JBOwnableOverrides.INVALID_NEW_OWNER.selector
-            )
-        );
+        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.INVALID_NEW_OWNER.selector));
 
         // Transfer ownership to the 0 address (should revert).
         ownable.transferOwnership(address(0));
