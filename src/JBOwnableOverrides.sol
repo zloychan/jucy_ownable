@@ -2,16 +2,18 @@
 // Juicebox variation on OpenZeppelin Ownable
 pragma solidity ^0.8.23;
 
-import {Context} from "lib/openzeppelin-contracts/contracts/utils/Context.sol";
-import {IJBPermissions} from "lib/juice-contracts-v4/src/interfaces/IJBPermissions.sol";
-import {IJBPermissioned} from "lib/juice-contracts-v4/src/interfaces/IJBPermissioned.sol";
-import {IJBProjects} from "lib/juice-contracts-v4/src/interfaces/IJBProjects.sol";
+import {Context} from "@openzeppelin/contracts/utils/Context.sol";
+import {IJBPermissions} from "@bananapus/core/src/interfaces/IJBPermissions.sol";
+import {IJBPermissioned} from "@bananapus/core/src/interfaces/IJBPermissioned.sol";
+import {IJBProjects} from "@bananapus/core/src/interfaces/IJBProjects.sol";
 
 import {JBOwner} from "./struct/JBOwner.sol";
 import {IJBOwnable} from "./interfaces/IJBOwnable.sol";
 
-/// @notice Access control module to grant exclusive access to a specified address (the owner) for specific functions. The owner can also grant access permissions to other addresses via `JBPermissions`.
-/// @dev Inherit this contract to make the `onlyOwner` modifier available. When applied to a function, this modifier restricts use to the owner and addresses with the appropriate permission from the owner.
+/// @notice Access control module to grant exclusive access to a specified address (the owner) for specific functions.
+/// The owner can also grant access permissions to other addresses via `JBPermissions`.
+/// @dev Inherit this contract to make the `onlyOwner` modifier available. When applied to a function, this modifier
+/// restricts use to the owner and addresses with the appropriate permission from the owner.
 /// @dev Supports meta-transactions.
 abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
     //*********************************************************************//
@@ -73,7 +75,8 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         _transferOwnership(address(0), 0);
     }
 
-    /// @notice Transfers ownership of this contract to a new account (the `newOwner`). Can only be called by the current owner.
+    /// @notice Transfers ownership of this contract to a new account (the `newOwner`). Can only be called by the
+    /// current owner.
     /// @param newOwner The address that should receive ownership of this contract.
     function transferOwnership(address newOwner) public virtual {
         _checkOwner();
@@ -96,7 +99,8 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         _transferOwnership(address(0), uint88(projectId));
     }
 
-    /// @notice Sets the permission ID which, when granted from the owner, allows other addresses to perform operations on their behalf.
+    /// @notice Sets the permission ID which, when granted from the owner, allows other addresses to perform operations
+    /// on their behalf.
     /// @param permissionId The ID of the permission to use for `onlyOwner`.
     function setPermissionId(uint8 permissionId) public virtual {
         _checkOwner();
@@ -107,7 +111,8 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
     // -------------------------- internal methods ----------------------- //
     //*********************************************************************//
 
-    /// @notice Sets the permission ID which, when granted from the owner, allows other addresses to perform operations on their behalf.
+    /// @notice Sets the permission ID which, when granted from the owner, allows other addresses to perform operations
+    /// on their behalf.
     /// @dev Internal function without access restriction.
     /// @param permissionId The ID of the permission to use for `onlyOwner`.
     function _setPermissionId(uint8 permissionId) internal virtual {
@@ -158,7 +163,8 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         });
     }
 
-    /// @notice Only allows the specified account or an operator with the specified permission ID from that account to proceed.
+    /// @notice Only allows the specified account or an operator with the specified permission ID from that account to
+    /// proceed.
     /// @param account The account to allow.
     /// @param projectId The ID of the project to look for an operator within.
     /// @param permissionId The ID of the permission to check for.
@@ -170,7 +176,8 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         ) revert UNAUTHORIZED();
     }
 
-    /// @notice If the `override` flag is true, proceed. Otherwise, only allows the specified account or an operator with the specified permission ID from that account to proceed.
+    /// @notice If the `override` flag is true, proceed. Otherwise, only allows the specified account or an operator
+    /// with the specified permission ID from that account to proceed.
     /// @param account The account to allow.
     /// @param projectId The ID of the pproject to look for an operator within. TODO: remove
     /// @param permissionId The ID of the permission to check for.

@@ -3,13 +3,13 @@ pragma solidity ^0.8.23;
 
 import "forge-std/Test.sol";
 import {MockOwnable} from "./mocks/MockOwnable.sol";
-import {JBOwnableOverrides} from "src/JBOwnableOverrides.sol";
+import {JBOwnableOverrides} from "../src/JBOwnableOverrides.sol";
 
-import {JBPermissions} from "lib/juice-contracts-v4/src/JBPermissions.sol";
-import {JBProjects} from "lib/juice-contracts-v4/src/JBProjects.sol";
-import {IJBPermissions} from "lib/juice-contracts-v4/src/interfaces/IJBPermissions.sol";
-import {JBPermissionsData} from "lib/juice-contracts-v4/src/structs/JBPermissionsData.sol";
-import {IJBProjects} from "lib/juice-contracts-v4/src/interfaces/IJBProjects.sol";
+import {JBPermissions} from "@bananapus/core/src/JBPermissions.sol";
+import {JBProjects} from "@bananapus/core/src/JBProjects.sol";
+import {IJBPermissions} from "@bananapus/core/src/interfaces/IJBPermissions.sol";
+import {JBPermissionsData} from "@bananapus/core/src/structs/JBPermissionsData.sol";
+import {IJBProjects} from "@bananapus/core/src/interfaces/IJBProjects.sol";
 
 contract OwnableTest is Test {
     IJBProjects PROJECTS;
@@ -120,11 +120,7 @@ contract OwnableTest is Test {
         // Create the `Ownable` contract.
         MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                JBOwnableOverrides.INVALID_NEW_OWNER.selector
-            )
-        );
+        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.INVALID_NEW_OWNER.selector));
 
         // Transfer ownership to project ID 0 (should revert).
         ownable.transferOwnershipToProject(0);
@@ -137,11 +133,7 @@ contract OwnableTest is Test {
         // Create the `Ownable` contract.
         MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS);
 
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                JBOwnableOverrides.INVALID_NEW_OWNER.selector
-            )
-        );
+        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.INVALID_NEW_OWNER.selector));
 
         // Transfer ownership to the 0 address (should revert).
         ownable.transferOwnership(address(0));
