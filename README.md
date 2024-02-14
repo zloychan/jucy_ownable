@@ -33,7 +33,7 @@ For projects that use forge:
 forge install Bananapus/nana-ownable
 ```
 
-And add `@bananapus/ownable=lib/nana-ownable/` to `remappings.txt`
+And add `@bananapus/ownable=lib/nana-ownable/` to `remappings.txt`. You'll also need to install `nana-ownable`'s dependencies and add similar remappings for them.
 
 ## Develop
 
