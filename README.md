@@ -1,6 +1,6 @@
-# Juice Ownable
+# Bananapus Ownable
 
-A Juicebox variation on OpenZeppelin [`Ownable`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol) to enable owner-based access control incorporating Juicebox project ownership and `JBPermissions`.
+A Bananapus variation on OpenZeppelin [`Ownable`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol) to enable owner-based access control incorporating Juicebox project ownership and `JBPermissions`, forked from [`jbx-protocol/juice-ownable`](https://github.com/jbx-protocol/juice-ownable).
 
 This implementation adds:
 
@@ -17,7 +17,23 @@ This repo contains 2 contracts:
 
 **NOTICE:** Only use `JBOwnableOverride` if you are overriding OpenZeppelin `Ownable` v4.7.0 or higher. Otherwise, `JBPermissions` functionality for `onlyOwner` will not work.
 
-_If you're having trouble understanding this contract, take a look at the [core Juicebox contracts](https://github.com/bananapus/juice-contracts-v4) and the [documentation](https://docs.juicebox.money/) first. If you have questions, reach out on [Discord](https://discord.com/invite/ErQYmth4dS)._
+_If you're having trouble understanding this contract, take a look at the [core protocol contracts](https://github.com/Bananapus/nana-core) and the [documentation](https://docs.juicebox.money/) first. If you have questions, reach out on [Discord](https://discord.com/invite/ErQYmth4dS)._
+
+## Install
+
+For projects that use npm:
+
+```bash
+npm install @bananapus/ownable
+```
+
+For projects that use forge:
+
+```bash
+forge install Bananapus/nana-ownable
+```
+
+And add `@bananapus/ownable=lib/nana-ownable/` to `remappings.txt`
 
 ## Develop
 
