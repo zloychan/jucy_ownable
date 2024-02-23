@@ -1,13 +1,13 @@
 {
   "name": "@bananapus/ownable",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jbx-protocol/nana-ownable"
   },
   "dependencies": {
-    "@bananapus/core": "^0.0.2",
+    "@bananapus/core": "^0.0.6",
     "@openzeppelin/contracts": "^5.0.1"
   },
   "scripts": {
