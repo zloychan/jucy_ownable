@@ -50,7 +50,7 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         PERMISSIONS = permissions;
         PROJECTS = projects;
 
-        _transferOwnership(_defaultOwner());
+        _transferOwnership(_initialOwner());
     }
 
     //*********************************************************************//
@@ -200,7 +200,7 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
 
     /// @notice returns the address that should become the owner on deployment.
     /// @return _owner the address that will become the owner when this contract is deployed.
-    function _defaultOwner() internal view virtual returns (address _owner) {
+    function _initialOwner() internal view virtual returns (address _owner) {
         return _msgSender();
     }
 
