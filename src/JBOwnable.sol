@@ -20,7 +20,15 @@ contract JBOwnable is JBOwnableOverrides {
         _;
     }
 
-    function _emitTransferEvent(address previousOwner, address newOwner) internal virtual override {
-        emit OwnershipTransferred(previousOwner, newOwner);
+    function _emitTransferEvent(
+        address previousOwner,
+        address newOwner,
+        uint88 newProjectId
+    )
+        internal
+        virtual
+        override
+    {
+        emit OwnershipTransferred(previousOwner, newProjectId == 0 ? newOwner : PROJECTS.ownerOf(newProjectId));
     }
 }

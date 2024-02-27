@@ -50,7 +50,7 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         PERMISSIONS = permissions;
         PROJECTS = projects;
 
-        _transferOwnership(msg.sender);
+        _transferOwnership(_defaultOwner());
     }
 
     //*********************************************************************//
@@ -145,7 +145,7 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         // This is to prevent permissions clashes for the new user/owner.
         jbOwner = JBOwner({owner: newOwner, projectId: projectId, permissionId: 0});
         // Emit a transfer event with the new owner's address.
-        _emitTransferEvent(oldOwner, projectId == 0 ? newOwner : PROJECTS.ownerOf(projectId));
+        _emitTransferEvent(oldOwner, newOwner, projectId);
     }
 
     //*********************************************************************//
@@ -198,5 +198,12 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         _requirePermissionFrom(account, projectId, permissionId);
     }
 
-    function _emitTransferEvent(address previousOwner, address newOwner) internal virtual;
+    /// @notice returns the address that should become the owner on deployment.
+    /// @return _owner the address that will become the owner when this contract is deployed.
+    function _defaultOwner() internal view virtual returns (address _owner) {
+        return _msgSender();
+    }
+
+    /// @notice Either `newOwner` or `newProjectId` is non-zero or both are zero. But they can never both be non-zero.
+    function _emitTransferEvent(address previousOwner, address newOwner, uint88 newProjectId) internal virtual;
 }
