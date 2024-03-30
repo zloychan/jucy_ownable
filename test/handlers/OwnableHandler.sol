@@ -30,15 +30,17 @@ contract OwnableHandler is CommonBase, StdCheats, StdUtils {
     }
 
     constructor() {
-        address initialOwner = vm.addr(1);
+        address deployer = vm.addr(1);
+        address initialOwner = vm.addr(2);
         // Deploy the permissions contract.j
         PERMISSIONS = new JBPermissions();
         // Deploy the `JBProjects` contract.
         PROJECTS = new JBProjects(address(123));
         // Deploy the `JBOwnable` contract.
-        vm.prank(initialOwner);
-        OWNABLE = new MockOwnable(PROJECTS, PERMISSIONS);
+        vm.prank(deployer);
+        OWNABLE = new MockOwnable(PROJECTS, PERMISSIONS, initialOwner, uint88(0));
 
+        actors.push(deployer);
         actors.push(initialOwner);
         actors.push(address(420));
     }

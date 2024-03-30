@@ -18,9 +18,9 @@ import {IJBOwnable} from "./interfaces/IJBOwnable.sol";
 abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
     //*********************************************************************//
     // --------------------------- custom errors --------------------------//
-    //*********************************************************************//
+    //*********************************************************************//b
 
-    error UNAUTHORIZED();
+    error UNAUTHORIZED(address sender);
     error INVALID_NEW_OWNER();
 
     //*********************************************************************//
@@ -46,11 +46,21 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
 
     /// @param projects The `IJBProjects` to use for tracking project ownership.
     /// @param permissions The `IJBPermissions` to use for managing permissions.
-    constructor(IJBProjects projects, IJBPermissions permissions) {
+    /// @param initialOwner The initial owner of the contract.
+    /// @param initialprojectIdOwner The initial project id that owns this contract.
+    constructor(IJBProjects projects, IJBPermissions permissions, address initialOwner, uint88 initialprojectIdOwner) {
         PERMISSIONS = permissions;
         PROJECTS = projects;
 
-        _transferOwnership(_initialOwner());
+        // We force the inheriting contract to set an owner, as there is a
+        // low chance someone will use `JBOwnable` to create an unowned contract.
+        // But a higher chance that both are accidentally set to be `0`.
+        // If you really want an unowned contract, set the owner to any address then renounce in the constructor body.
+        if (initialprojectIdOwner == 0 && initialOwner == address(0)) {
+            revert INVALID_NEW_OWNER();
+        }
+
+        _transferOwnership(initialOwner, initialprojectIdOwner);
     }
 
     //*********************************************************************//
@@ -173,7 +183,21 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         if (
             sender != account && !PERMISSIONS.hasPermission(sender, account, projectId, permissionId)
                 && !PERMISSIONS.hasPermission(sender, account, 0, permissionId)
-        ) revert UNAUTHORIZED();
+        ) revert UNAUTHORIZED(sender);
+    }
+
+    function _requirePermissionAllowingOverrideFromOwner(
+        uint256 permissionId,
+        bool alsoGrantAccessIf
+    )
+        internal
+        view
+        virtual
+    {
+        // Return early if the override flag is true.
+        if (alsoGrantAccessIf) return;
+        // Otherwise, perform a standard check.
+        _requirePermissionFrom(owner(), jbOwner.projectId, permissionId);
     }
 
     /// @notice If the `override` flag is true, proceed. Otherwise, only allows the specified account or an operator
@@ -198,12 +222,7 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         _requirePermissionFrom(account, projectId, permissionId);
     }
 
-    /// @notice returns the address that should become the owner on deployment.
-    /// @return _owner the address that will become the owner when this contract is deployed.
-    function _initialOwner() internal view virtual returns (address _owner) {
-        return _msgSender();
-    }
-
     /// @notice Either `newOwner` or `newProjectId` is non-zero or both are zero. But they can never both be non-zero.
+    /// @dev This function exists because some contracts will try to deploy contracts for a project before
     function _emitTransferEvent(address previousOwner, address newOwner, uint88 newProjectId) internal virtual;
 }

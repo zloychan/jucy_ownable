@@ -14,7 +14,14 @@ contract MockOwnable is JBOwnable {
         permissionId = newPermissionId;
     }
 
-    constructor(IJBProjects projects, IJBPermissions permissions) JBOwnable(projects, permissions) {}
+    constructor(
+        IJBProjects projects,
+        IJBPermissions permissions,
+        address initialOwner,
+        uint88 initialprojectIdOwner
+    )
+        JBOwnable(projects, permissions, initialOwner, initialprojectIdOwner)
+    {}
 
     function protectedMethod() external onlyOwner {
         emit ProtectedMethodCalled();
