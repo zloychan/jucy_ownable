@@ -1,6 +1,6 @@
 {
   "name": "@bananapus/ownable",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -12,6 +12,6 @@
   },
   "scripts": {
     "test": "forge test",
-    "coverage:integration": "forge coverage --match-path \"./src/*.sol\" --report lcov --report summary",
+    "coverage:integration": "forge coverage --match-path \"./src/*.sol\" --report lcov --report summary"
   }
 }
