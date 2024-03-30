@@ -34,4 +34,12 @@ contract MockOwnable is JBOwnable {
 
         emit ProtectedMethodCalled();
     }
+
+    function protectedMethodWithRequireFromOwner() external {
+        uint256 projectId = jbOwner.projectId;
+
+        _requirePermissionFrom({account: PROJECTS.ownerOf(projectId), projectId: projectId, permissionId: permissionId});
+
+        emit ProtectedMethodCalled();
+    }
 }

@@ -6,6 +6,7 @@ import {MockOwnable} from "./mocks/MockOwnable.sol";
 import {JBOwnableOverrides} from "../src/JBOwnableOverrides.sol";
 
 import {JBPermissions} from "@bananapus/core/src/JBPermissions.sol";
+import {JBPermissioned} from "@bananapus/core/src/abstract/JBPermissioned.sol";
 import {JBProjects} from "@bananapus/core/src/JBProjects.sol";
 import {IJBPermissions} from "@bananapus/core/src/interfaces/IJBPermissions.sol";
 import {JBPermissionsData} from "@bananapus/core/src/structs/JBPermissionsData.sol";
@@ -227,7 +228,7 @@ contract OwnableTest is Test {
         ownable.setPermissionId(requiredPermissionId);
 
         // Attempt to call the protected method without permission.
-        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.UNAUTHORIZED.selector, (callerAddress)));
+        vm.expectRevert(abi.encodeWithSelector(JBPermissioned.UNAUTHORIZED.selector));
         vm.prank(callerAddress);
         ownable.protectedMethod();
 
@@ -248,7 +249,7 @@ contract OwnableTest is Test {
         );
 
         if (!_shouldHavePermission) {
-            vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.UNAUTHORIZED.selector, (callerAddress)));
+            vm.expectRevert(abi.encodeWithSelector(JBPermissioned.UNAUTHORIZED.selector));
         }
 
         vm.prank(callerAddress);
@@ -279,7 +280,7 @@ contract OwnableTest is Test {
         ownable.setPermission(requiredPermissionId);
 
         // Attempt to call the protected method without permission.
-        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.UNAUTHORIZED.selector, (callerAddress)));
+        vm.expectRevert(abi.encodeWithSelector(JBPermissioned.UNAUTHORIZED.selector));
         vm.prank(callerAddress);
         ownable.protectedMethodWithRequirePermission();
 
@@ -300,7 +301,7 @@ contract OwnableTest is Test {
         );
 
         if (!_shouldHavePermission) {
-            vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.UNAUTHORIZED.selector, (callerAddress)));
+            vm.expectRevert(abi.encodeWithSelector(JBPermissioned.UNAUTHORIZED.selector));
         }
 
         vm.prank(callerAddress);
