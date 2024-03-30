@@ -42,7 +42,14 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
     /// @param permissions The `IJBPermissions` to use for managing permissions.
     /// @param initialOwner The initial owner of the contract.
     /// @param initialprojectIdOwner The initial project id that owns this contract.
-    constructor(IJBProjects projects, IJBPermissions permissions, address initialOwner, uint88 initialprojectIdOwner) JBPermissioned(permissions) {
+    constructor(
+        IJBProjects projects,
+        IJBPermissions permissions,
+        address initialOwner,
+        uint88 initialprojectIdOwner
+    )
+        JBPermissioned(permissions)
+    {
         PROJECTS = projects;
 
         // We force the inheriting contract to set an owner, as there is a
