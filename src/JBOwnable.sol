@@ -12,7 +12,16 @@ contract JBOwnable is JBOwnableOverrides {
 
     /// @param projects The `IJBProjects` to use for tracking project ownership.
     /// @param permissions The `IJBPermissions` to use for managing permissions.
-    constructor(IJBProjects projects, IJBPermissions permissions) JBOwnableOverrides(projects, permissions) {}
+    /// @param initialOwner The initial owner of the contract.
+    /// @param initialProjectIdOwner The initial project id that owns this contract.
+    constructor(
+        IJBProjects projects,
+        IJBPermissions permissions,
+        address initialOwner,
+        uint88 initialProjectIdOwner
+    )
+        JBOwnableOverrides(projects, permissions, initialOwner, initialProjectIdOwner)
+    {}
 
     /// @notice Reverts if called by an address that is not the owner and does not have permission from the owner.
     modifier onlyOwner() virtual {

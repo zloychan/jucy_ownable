@@ -3,8 +3,7 @@
 pragma solidity ^0.8.23;
 
 import {Context} from "@openzeppelin/contracts/utils/Context.sol";
-import {IJBPermissions} from "@bananapus/core/src/interfaces/IJBPermissions.sol";
-import {IJBPermissioned} from "@bananapus/core/src/interfaces/IJBPermissioned.sol";
+import {JBPermissioned, IJBPermissions} from "@bananapus/core/src/abstract/JBPermissioned.sol";
 import {IJBProjects} from "@bananapus/core/src/interfaces/IJBProjects.sol";
 
 import {JBOwner} from "./struct/JBOwner.sol";
@@ -14,21 +13,16 @@ import {IJBOwnable} from "./interfaces/IJBOwnable.sol";
 /// The owner can also grant access permissions to other addresses via `JBPermissions`.
 /// @dev Inherit this contract to make the `onlyOwner` modifier available. When applied to a function, this modifier
 /// restricts use to the owner and addresses with the appropriate permission from the owner.
-/// @dev Supports meta-transactions.
-abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
+abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
     //*********************************************************************//
     // --------------------------- custom errors --------------------------//
-    //*********************************************************************//
+    //*********************************************************************//b
 
-    error UNAUTHORIZED();
     error INVALID_NEW_OWNER();
 
     //*********************************************************************//
     // ---------------- public immutable stored properties --------------- //
     //*********************************************************************//
-
-    /// @notice A contract storing permissions.
-    IJBPermissions public immutable PERMISSIONS;
 
     /// @notice Mints ERC-721s that represent project ownership and transfers.
     IJBProjects public immutable PROJECTS;
@@ -46,11 +40,27 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
 
     /// @param projects The `IJBProjects` to use for tracking project ownership.
     /// @param permissions The `IJBPermissions` to use for managing permissions.
-    constructor(IJBProjects projects, IJBPermissions permissions) {
-        PERMISSIONS = permissions;
+    /// @param initialOwner The initial owner of the contract.
+    /// @param initialProjectIdOwner The initial project id that owns this contract.
+    constructor(
+        IJBProjects projects,
+        IJBPermissions permissions,
+        address initialOwner,
+        uint88 initialProjectIdOwner
+    )
+        JBPermissioned(permissions)
+    {
         PROJECTS = projects;
 
-        _transferOwnership(_initialOwner());
+        // We force the inheriting contract to set an owner, as there is a
+        // low chance someone will use `JBOwnable` to create an unowned contract.
+        // But a higher chance that both are accidentally set to be `0`.
+        // If you really want an unowned contract, set the owner to any address then renounce in the constructor body.
+        if (initialProjectIdOwner == 0 && initialOwner == address(0)) {
+            revert INVALID_NEW_OWNER();
+        }
+
+        _transferOwnership(initialOwner, initialProjectIdOwner);
     }
 
     //*********************************************************************//
@@ -163,47 +173,7 @@ abstract contract JBOwnableOverrides is Context, IJBOwnable, IJBPermissioned {
         });
     }
 
-    /// @notice Only allows the specified account or an operator with the specified permission ID from that account to
-    /// proceed.
-    /// @param account The account to allow.
-    /// @param projectId The ID of the project to look for an operator within.
-    /// @param permissionId The ID of the permission to check for.
-    function _requirePermissionFrom(address account, uint256 projectId, uint256 permissionId) internal view virtual {
-        address sender = _msgSender();
-        if (
-            sender != account && !PERMISSIONS.hasPermission(sender, account, projectId, permissionId)
-                && !PERMISSIONS.hasPermission(sender, account, 0, permissionId)
-        ) revert UNAUTHORIZED();
-    }
-
-    /// @notice If the `override` flag is true, proceed. Otherwise, only allows the specified account or an operator
-    /// with the specified permission ID from that account to proceed.
-    /// @param account The account to allow.
-    /// @param projectId The ID of the pproject to look for an operator within. TODO: remove
-    /// @param permissionId The ID of the permission to check for.
-    /// @param alsoGrantAccessIf An override condition which will allow access regardless of permissions.     */
-    function _requirePermissionAllowingOverrideFrom(
-        address account,
-        uint256 projectId,
-        uint256 permissionId,
-        bool alsoGrantAccessIf
-    )
-        internal
-        view
-        virtual
-    {
-        // Return early if the override flag is true.
-        if (alsoGrantAccessIf) return;
-        // Otherwise, perform a standard check.
-        _requirePermissionFrom(account, projectId, permissionId);
-    }
-
-    /// @notice returns the address that should become the owner on deployment.
-    /// @return _owner the address that will become the owner when this contract is deployed.
-    function _initialOwner() internal view virtual returns (address _owner) {
-        return _msgSender();
-    }
-
     /// @notice Either `newOwner` or `newProjectId` is non-zero or both are zero. But they can never both be non-zero.
+    /// @dev This function exists because some contracts will try to deploy contracts for a project before
     function _emitTransferEvent(address previousOwner, address newOwner, uint88 newProjectId) internal virtual;
 }
