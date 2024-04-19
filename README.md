@@ -1,6 +1,21 @@
 # Bananapus Ownable
 
-A Bananapus variation on OpenZeppelin [`Ownable`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol) to enable owner-based access control incorporating Juicebox project ownership and `JBPermissions`, forked from [`jbx-protocol/juice-ownable`](https://github.com/jbx-protocol/juice-ownable).
+A Bananapus variation on OpenZeppelin [`Ownable`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol) to enable owner-based access control incorporating Juicebox project ownership and `JBPermissions`.
+
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#repository-layout">Repository Layout</a></li>
+    <li><a href="#usage">Usage</a></li>
+  <ul>
+    <li><a href="#install">Install</a></li>
+    <li><a href="#develop">Develop</a></li>
+    <li><a href="#scripts">Scripts</a></li>
+    <li><a href="#tips">Tips</a></li>
+    </ul>
+  </ul>
+  </ol>
+</details>
 
 This implementation adds:
 
@@ -17,27 +32,55 @@ This repo contains 2 contracts:
 
 **NOTICE:** Only use `JBOwnableOverride` if you are overriding OpenZeppelin `Ownable` v4.7.0 or higher. Otherwise, `JBPermissions` functionality for `onlyOwner` will not work.
 
+This repo was forked from [`jbx-protocol/juice-ownable`](https://github.com/jbx-protocol/juice-ownable).
+
 _If you're having trouble understanding this contract, take a look at the [core protocol contracts](https://github.com/Bananapus/nana-core) and the [documentation](https://docs.juicebox.money/) first. If you have questions, reach out on [Discord](https://discord.com/invite/ErQYmth4dS)._
 
-## Install
+## Repository Layout
 
-For projects that use npm:
+The root directory contains this README, an MIT license, and config files.
+
+```
+nana-ownable/
+├── src/ - The Solidity source code for the contracts.
+│   ├── JBOwnable.sol - Implements ownable access control for Juicebox projects/permissions.
+│   ├── JBOwnableOverrides.sol - Abstract base contract used by JBOwnable.
+│   ├── interfaces/ - Contract interfaces.
+│   │   └── IJBOwnable.sol - Interface used by JBOwnableOverrides.
+│   └── structs/ - Structs.
+│       └── JBOwner.sol - Owner information for a given instance of JBOwnableOverrides.
+├── test/ - Forge tests and testing utilities. Top level contains the main test files.
+│   ├── handlers/ - Custom handlers for tests.
+│   ├── mock/ - Mocking utilities.
+│   ├── Ownable.t.sol - Main tests.
+│   └── OwnableInvariantTests.t.sol - Invariant test.
+└── .github/
+    └── workflows/ - CI/CD workflows.
+```
+
+## Usage
+
+### Install
+
+How to install `nana-ownable` in another project.
+
+For projects using `npm` to manage dependencies (recommended):
 
 ```bash
 npm install @bananapus/ownable
 ```
 
-For projects that use forge:
+For projects using `forge` to manage dependencies (not recommended):
 
 ```bash
 forge install Bananapus/nana-ownable
 ```
 
-And add `@bananapus/ownable=lib/nana-ownable/` to `remappings.txt`. You'll also need to install `nana-ownable`'s dependencies and add similar remappings for them.
+If you're using `forge` to manage dependencies, add `@bananapus/ownable/=lib/nana-ownable/` to `remappings.txt`. You'll also need to install `nana-ownable`'s dependencies and add similar remappings for them.
 
-## Develop
+### Develop
 
-`nana-ownable` uses [npm](https://www.npmjs.com/) for package management and the [Foundry](https://github.com/foundry-rs/foundry) development toolchain for builds, tests, and deployments. To get set up, [install Node.js](https://nodejs.org/en/download) and install [Foundry](https://github.com/foundry-rs/foundry):
+`nana-ownable` uses [npm](https://www.npmjs.com/) (version >=20.0.0) for package management and the [Foundry](https://github.com/foundry-rs/foundry) development toolchain for builds, tests, and deployments. To get set up, [install Node.js](https://nodejs.org/en/download) and install [Foundry](https://github.com/foundry-rs/foundry):
 
 ```bash
 curl -L https://foundry.paradigm.xyz | sh
@@ -46,7 +89,7 @@ curl -L https://foundry.paradigm.xyz | sh
 You can download and install dependencies with:
 
 ```bash
-npm install && forge install
+npm ci && forge install
 ```
 
 If you run into trouble with `forge install`, try using `git submodule update --init --recursive` to ensure that nested submodules have been properly initialized.
@@ -65,7 +108,7 @@ Some useful commands:
 
 To learn more, visit the [Foundry Book](https://book.getfoundry.sh/) docs.
 
-## Scripts
+### Scripts
 
 For convenience, several utility commands are available in `package.json`.
 
@@ -73,4 +116,16 @@ For convenience, several utility commands are available in `package.json`.
 | --------------------------------- | -------------------------------------- |
 | `npm test`                        | Run local tests.                       |
 | `npm run test:fork`               | Run fork tests (for use in CI).        |
-| `npm run coverage:lcov`           | Generate an LCOV test coverage report. |
+| `npm run coverage`           | Generate an LCOV test coverage report. |
+
+### Tips
+
+To view test coverage, run `npm run coverage` to generate an LCOV test report. You can use an extension like [Coverage Gutters](https://marketplace.visualstudio.com/items?itemName=ryanluker.vscode-coverage-gutters) to view coverage in your editor.
+
+If you're using Nomic Foundation's [Solidity](https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity) extension in VSCode, you may run into LSP errors because the extension cannot find dependencies outside of `lib`. You can often fix this by running:
+
+```bash
+forge remappings >> remappings.txt
+```
+
+This makes the extension aware of default remappings.
