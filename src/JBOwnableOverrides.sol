@@ -9,7 +9,9 @@ import {IJBProjects} from "@bananapus/core/src/interfaces/IJBProjects.sol";
 import {JBOwner} from "./struct/JBOwner.sol";
 import {IJBOwnable} from "./interfaces/IJBOwnable.sol";
 
-/// @notice An abstract base for `JBOwnable`, which restricts functions so they can only be called by a Juicebox project's owner or a specific owner address. The owner can give access permission to other addresses with `JBPermissions`.
+/// @notice An abstract base for `JBOwnable`, which restricts functions so they can only be called by a Juicebox
+/// project's owner or a specific owner address. The owner can give access permission to other addresses with
+/// `JBPermissions`.
 abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
     //*********************************************************************//
     // --------------------------- custom errors --------------------------//
@@ -34,14 +36,17 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
     //*********************************************************************//
     // -------------------------- constructor ---------------------------- //
     //*********************************************************************//
-    
-    /// @dev To restrict access to a Juicebox project's owner, pass that project's ID as the `initialProjectIdOwner` and the zero address as the `initialOwner`.
-    /// To restrict access to a specific address, pass that address as the `initialOwner` and `0` as the `initialProjectIdOwner`.
+
+    /// @dev To restrict access to a Juicebox project's owner, pass that project's ID as the `initialProjectIdOwner` and
+    /// the zero address as the `initialOwner`.
+    /// To restrict access to a specific address, pass that address as the `initialOwner` and `0` as the
+    /// `initialProjectIdOwner`.
     /// @dev The owner can give owner access to other addresses through the `permissions` contract.
     /// @param projects Mints ERC-721s that represent project ownership and transfers.
     /// @param permissions A contract storing permissions.
     /// @param initialOwner The owner if the `intialProjectIdOwner` is 0 (until ownership is transferred).
-    /// @param initialProjectIdOwner The ID of the Juicebox project whose owner is this contract's owner (until ownership is transferred).
+    /// @param initialProjectIdOwner The ID of the Juicebox project whose owner is this contract's owner (until
+    /// ownership is transferred).
     constructor(
         IJBProjects projects,
         IJBPermissions permissions,
@@ -52,8 +57,10 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
     {
         PROJECTS = projects;
 
-        // We force the inheriting contract to set an owner, as there is a low chance someone will use `JBOwnable` to create an unowned contract.
-        // It's more likely both were accidentally set to `0`. If you really want an unowned contract, set the owner to an address and call `renounceOwnership()` in the constructor body.
+        // We force the inheriting contract to set an owner, as there is a low chance someone will use `JBOwnable` to
+        // create an unowned contract.
+        // It's more likely both were accidentally set to `0`. If you really want an unowned contract, set the owner to
+        // an address and call `renounceOwnership()` in the constructor body.
         if (initialProjectIdOwner == 0 && initialOwner == address(0)) {
             revert INVALID_NEW_OWNER();
         }
@@ -76,14 +83,16 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
         return PROJECTS.ownerOf(ownerInfo.projectId);
     }
 
-    /// @notice Gives up ownership of this contract, making it impossible to call `onlyOwner` and `_checkOwner` functions.
+    /// @notice Gives up ownership of this contract, making it impossible to call `onlyOwner` and `_checkOwner`
+    /// functions.
     /// @notice This can only be called by the current owner.
     function renounceOwnership() public virtual {
         _checkOwner();
         _transferOwnership(address(0), 0);
     }
 
-    /// @notice Transfers ownership of this contract to a new address (the `newOwner`). Can only be called by the current owner.
+    /// @notice Transfers ownership of this contract to a new address (the `newOwner`). Can only be called by the
+    /// current owner.
     /// @notice This can only be called by the current owner.
     /// @param newOwner The address to transfer ownership to.
     function transferOwnership(address newOwner) public virtual {
