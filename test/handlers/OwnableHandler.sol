@@ -35,7 +35,7 @@ contract OwnableHandler is CommonBase, StdCheats, StdUtils {
         // Deploy the permissions contract.j
         PERMISSIONS = new JBPermissions();
         // Deploy the `JBProjects` contract.
-        PROJECTS = new JBProjects(address(123));
+        PROJECTS = new JBProjects(address(123), address(0));
         // Deploy the `JBOwnable` contract.
         vm.prank(deployer);
         OWNABLE = new MockOwnable(PROJECTS, PERMISSIONS, initialOwner, uint88(0));
