@@ -2,10 +2,9 @@
 pragma solidity ^0.8.23;
 
 /// @notice Owner information for a given instance of `JBOwnableOverrides`.
-/// @custom:member owner If `projectId` is 0 and this is set, this static address has owner access.
-/// @custom:member projectId Unless this is 0, this project's owner has owner access.
-/// @custom:member permissionId The ID of the permission required from the project's owner to have owner access. See
-/// `JBPermissions` in `juice-contracts-v4`.
+/// @custom:member owner If `projectId` is 0, this address has owner access.
+/// @custom:member projectId The owner of the `JBProjects` ERC-721 with this ID has owner access. If this is 0, the `owner` address has owner access.
+/// @custom:member permissionId The permission ID which corresponds to owner access. See `JBPermissions` in `nana-core` and `nana-permission-ids`.
 struct JBOwner {
     address owner;
     uint88 projectId;
