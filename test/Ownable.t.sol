@@ -29,7 +29,7 @@ contract OwnableTest is Test {
         // Deploy the permissions contract.
         PERMISSIONS = new JBPermissions();
         // Deploy the projects contract.
-        PROJECTS = new JBProjects(address(123));
+        PROJECTS = new JBProjects(address(123), address(0));
     }
 
     function testDeployerDoesNotBecomeOwner(address deployer, address owner) public isNotContract(owner) {
