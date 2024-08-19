@@ -8,7 +8,6 @@ import {IJBPermissions} from "@bananapus/core/src/interfaces/IJBPermissions.sol"
 import {JBOwnableOverrides} from "./JBOwnableOverrides.sol";
 
 contract JBOwnable is JBOwnableOverrides {
-
     //*********************************************************************//
     // -------------------------- constructor ---------------------------- //
     //*********************************************************************//
@@ -51,6 +50,10 @@ contract JBOwnable is JBOwnableOverrides {
         virtual
         override
     {
-        emit OwnershipTransferred({ previousOwner: previousOwner, newOwner: newProjectId == 0 ? newOwner : PROJECTS.ownerOf(newProjectId), caller: msg.sender });
+        emit OwnershipTransferred({
+            previousOwner: previousOwner,
+            newOwner: newProjectId == 0 ? newOwner : PROJECTS.ownerOf(newProjectId),
+            caller: msg.sender
+        });
     }
 }

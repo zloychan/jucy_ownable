@@ -237,7 +237,9 @@ contract OwnableTest is Test {
         uint8[] memory _permissionIds = new uint8[](permissionIdsToGrant.length);
         for (uint256 i; i < permissionIdsToGrant.length; i++) {
             // Check if the permission we need is in the permissions to grant, including if it's ROOT.
-            if (permissionIdsToGrant[i] == requiredPermissionId || permissionIdsToGrant[i] == 1) _shouldHavePermission = true;
+            if (permissionIdsToGrant[i] == requiredPermissionId || permissionIdsToGrant[i] == 1) {
+                _shouldHavePermission = true;
+            }
             _permissionIds[i] = permissionIdsToGrant[i];
         }
 
@@ -289,7 +291,9 @@ contract OwnableTest is Test {
         uint8[] memory _permissionIds = new uint8[](permissionIdsToGrant.length);
         for (uint256 i; i < permissionIdsToGrant.length; i++) {
             // Check if the permission we need is in the permissions to grant, including if it's ROOT.
-            if (permissionIdsToGrant[i] == requiredPermissionId || permissionIdsToGrant[i] == 1) _shouldHavePermission = true;
+            if (permissionIdsToGrant[i] == requiredPermissionId || permissionIdsToGrant[i] == 1) {
+                _shouldHavePermission = true;
+            }
             _permissionIds[i] = permissionIdsToGrant[i];
         }
 

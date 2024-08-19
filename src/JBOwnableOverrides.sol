@@ -15,7 +15,6 @@ import {JBOwner} from "./struct/JBOwner.sol";
 /// @dev Inherit this contract to make the `onlyOwner` modifier available. When applied to a function, this modifier
 /// restricts use to the owner and addresses with the appropriate permission from the owner.
 abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
-
     //*********************************************************************//
     // --------------------------- custom errors --------------------------//
     //*********************************************************************//b
@@ -27,7 +26,7 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
     //*********************************************************************//
 
     /// @notice Mints ERC-721s that represent project ownership and transfers.
-    IJBProjects public override immutable PROJECTS;
+    IJBProjects public immutable override PROJECTS;
 
     //*********************************************************************//
     // --------------------- public stored properties -------------------- //
@@ -102,7 +101,7 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
 
     /// @notice Gives up ownership of this contract, making it impossible to call `onlyOwner`/`_checkOwner` functions.
     /// Can only be called by the current owner.
-    function renounceOwnership() public override virtual {
+    function renounceOwnership() public virtual override {
         _checkOwner();
         _transferOwnership(address(0), 0);
     }
@@ -110,7 +109,7 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
     /// @notice Sets the permission ID which, when granted from the owner, allows other addresses to perform operations
     /// on their behalf.
     /// @param permissionId The ID of the permission to use for `onlyOwner`.
-    function setPermissionId(uint8 permissionId) public override virtual {
+    function setPermissionId(uint8 permissionId) public virtual override {
         _checkOwner();
         _setPermissionId(permissionId);
     }
@@ -118,7 +117,7 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
     /// @notice Transfers ownership of this contract to a new account (the `newOwner`). Can only be called by the
     /// current owner.
     /// @param newOwner The address that should receive ownership of this contract.
-    function transferOwnership(address newOwner) public override virtual {
+    function transferOwnership(address newOwner) public virtual override {
         _checkOwner();
         if (newOwner == address(0)) {
             revert JBOwnableOverrides_InvalidNewOwner();
@@ -130,7 +129,7 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
     /// @notice Transfer ownership of this contract to a new Juicebox project.
     /// @dev The `projectId` must fit within a `uint88`.
     /// @param projectId The ID of the project that should receive ownership of this contract.
-    function transferOwnershipToProject(uint256 projectId) public override virtual {
+    function transferOwnershipToProject(uint256 projectId) public virtual override {
         _checkOwner();
         if (projectId == 0 || projectId > type(uint88).max) {
             revert JBOwnableOverrides_InvalidNewOwner();
@@ -153,7 +152,7 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
     /// @param permissionId The ID of the permission to use for `onlyOwner`.
     function _setPermissionId(uint8 permissionId) internal virtual {
         jbOwner.permissionId = permissionId;
-        emit PermissionIdChanged({ newId: permissionId, caller: msg.sender });
+        emit PermissionIdChanged({newId: permissionId, caller: msg.sender});
     }
 
     /// @notice Helper to allow for drop-in replacement of OpenZeppelin.

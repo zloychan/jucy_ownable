@@ -6,11 +6,11 @@ import {IJBProjects} from "@bananapus/core/src/interfaces/IJBProjects.sol";
 interface IJBOwnable {
     event PermissionIdChanged(uint8 newId, address caller);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner, address caller);
-    
+
     function PROJECTS() external view returns (IJBProjects);
     function jbOwner() external view returns (address owner, uint88 projectOwner, uint8 permissionId);
     function owner() external view returns (address);
-    
+
     function renounceOwnership() external;
     function setPermissionId(uint8 permissionId) external;
     function transferOwnership(address newOwner) external;
