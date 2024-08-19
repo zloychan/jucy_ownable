@@ -20,7 +20,7 @@ contract MockOwnable is JBOwnable {
         address initialOwner,
         uint88 initialprojectIdOwner
     )
-        JBOwnable(projects, permissions, initialOwner, initialprojectIdOwner)
+        JBOwnable(permissions, projects, initialOwner, initialprojectIdOwner)
     {}
 
     function protectedMethod() external onlyOwner {
