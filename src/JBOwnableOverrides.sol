@@ -36,6 +36,36 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
     JBOwner public override jbOwner;
 
     //*********************************************************************//
+    // -------------------------- constructor ---------------------------- //
+    //*********************************************************************//
+
+    /// @param permissions The `IJBPermissions` to use for managing permissions.
+    /// @param projects The `IJBProjects` to use for tracking project ownership.
+    /// @param initialOwner The initial owner of the contract.
+    /// @param initialProjectIdOwner The initial project id that owns this contract.
+    constructor(
+        IJBPermissions permissions,
+        IJBProjects projects,
+        address initialOwner,
+        uint88 initialProjectIdOwner
+    )
+        JBPermissioned(permissions)
+    {
+        PROJECTS = projects;
+
+        // We force the inheriting contract to set an owner, as there is a
+        // low chance someone will use `JBOwnable` to create an unowned contract.
+        // But a higher chance that both are accidentally set to be `0`.
+        // If you really want an unowned contract, set the owner to any address then renounce in the constructor body.
+        if (initialProjectIdOwner == 0 && initialOwner == address(0)) {
+            revert JBOwnableOverrides_InvalidNewOwner();
+        }
+
+        _transferOwnership(initialOwner, initialProjectIdOwner);
+    }
+
+
+    //*********************************************************************//
     // -------------------------- public views --------------------------- //
     //*********************************************************************//
 
@@ -64,35 +94,6 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
             projectId: ownerInfo.projectId,
             permissionId: ownerInfo.permissionId
         });
-    }
-
-    //*********************************************************************//
-    // -------------------------- constructor ---------------------------- //
-    //*********************************************************************//
-
-    /// @param permissions The `IJBPermissions` to use for managing permissions.
-    /// @param projects The `IJBProjects` to use for tracking project ownership.
-    /// @param initialOwner The initial owner of the contract.
-    /// @param initialProjectIdOwner The initial project id that owns this contract.
-    constructor(
-        IJBPermissions permissions,
-        IJBProjects projects,
-        address initialOwner,
-        uint88 initialProjectIdOwner
-    )
-        JBPermissioned(permissions)
-    {
-        PROJECTS = projects;
-
-        // We force the inheriting contract to set an owner, as there is a
-        // low chance someone will use `JBOwnable` to create an unowned contract.
-        // But a higher chance that both are accidentally set to be `0`.
-        // If you really want an unowned contract, set the owner to any address then renounce in the constructor body.
-        if (initialProjectIdOwner == 0 && initialOwner == address(0)) {
-            revert JBOwnableOverrides_InvalidNewOwner();
-        }
-
-        _transferOwnership(initialOwner, initialProjectIdOwner);
     }
 
     //*********************************************************************//
