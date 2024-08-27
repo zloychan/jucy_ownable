@@ -110,7 +110,7 @@ contract OwnableTest is Test {
         // Create the `Ownable` contract.
         MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS, owner, 0);
 
-        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.INVALID_NEW_OWNER.selector));
+        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.JBOwnableOverrides_InvalidNewOwner.selector));
 
         // Transfer ownership to project ID 0 (should revert).
         ownable.transferOwnershipToProject(0);
@@ -124,7 +124,7 @@ contract OwnableTest is Test {
         // Create the `Ownable` contract.
         MockOwnable ownable = new MockOwnable(PROJECTS, PERMISSIONS, owner, uint88(0));
 
-        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.INVALID_NEW_OWNER.selector));
+        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.JBOwnableOverrides_InvalidNewOwner.selector));
 
         // Transfer ownership to the 0 address (should revert).
         ownable.transferOwnership(address(0));
@@ -228,16 +228,18 @@ contract OwnableTest is Test {
         ownable.setPermissionId(requiredPermissionId);
 
         // Attempt to call the protected method without permission.
-        vm.expectRevert(abi.encodeWithSelector(JBPermissioned.UNAUTHORIZED.selector));
+        vm.expectRevert(abi.encodeWithSelector(JBPermissioned.JBPermissioned_Unauthorized.selector));
         vm.prank(callerAddress);
         ownable.protectedMethod();
 
         // Give permission.
         bool _shouldHavePermission;
-        uint256[] memory _permissionIds = new uint256[](permissionIdsToGrant.length);
+        uint8[] memory _permissionIds = new uint8[](permissionIdsToGrant.length);
         for (uint256 i; i < permissionIdsToGrant.length; i++) {
-            // Check if the permission we need is in the permissions to grant.
-            if (permissionIdsToGrant[i] == requiredPermissionId) _shouldHavePermission = true;
+            // Check if the permission we need is in the permissions to grant, including if it's ROOT.
+            if (permissionIdsToGrant[i] == requiredPermissionId || permissionIdsToGrant[i] == 1) {
+                _shouldHavePermission = true;
+            }
             _permissionIds[i] = permissionIdsToGrant[i];
         }
 
@@ -245,11 +247,11 @@ contract OwnableTest is Test {
         vm.prank(projectOwner);
         PERMISSIONS.setPermissionsFor(
             projectOwner,
-            JBPermissionsData({operator: callerAddress, projectId: _projectId, permissionIds: _permissionIds})
+            JBPermissionsData({operator: callerAddress, projectId: uint56(_projectId), permissionIds: _permissionIds})
         );
 
         if (!_shouldHavePermission) {
-            vm.expectRevert(abi.encodeWithSelector(JBPermissioned.UNAUTHORIZED.selector));
+            vm.expectRevert(abi.encodeWithSelector(JBPermissioned.JBPermissioned_Unauthorized.selector));
         }
 
         vm.prank(callerAddress);
@@ -280,16 +282,18 @@ contract OwnableTest is Test {
         ownable.setPermission(requiredPermissionId);
 
         // Attempt to call the protected method without permission.
-        vm.expectRevert(abi.encodeWithSelector(JBPermissioned.UNAUTHORIZED.selector));
+        vm.expectRevert(abi.encodeWithSelector(JBPermissioned.JBPermissioned_Unauthorized.selector));
         vm.prank(callerAddress);
         ownable.protectedMethodWithRequirePermission();
 
         // Give permission.
         bool _shouldHavePermission;
-        uint256[] memory _permissionIds = new uint256[](permissionIdsToGrant.length);
+        uint8[] memory _permissionIds = new uint8[](permissionIdsToGrant.length);
         for (uint256 i; i < permissionIdsToGrant.length; i++) {
-            // Check if the permission we need is in the permissions to grant.
-            if (permissionIdsToGrant[i] == requiredPermissionId) _shouldHavePermission = true;
+            // Check if the permission we need is in the permissions to grant, including if it's ROOT.
+            if (permissionIdsToGrant[i] == requiredPermissionId || permissionIdsToGrant[i] == 1) {
+                _shouldHavePermission = true;
+            }
             _permissionIds[i] = permissionIdsToGrant[i];
         }
 
@@ -297,11 +301,11 @@ contract OwnableTest is Test {
         vm.prank(projectOwner);
         PERMISSIONS.setPermissionsFor(
             projectOwner,
-            JBPermissionsData({operator: callerAddress, projectId: _projectId, permissionIds: _permissionIds})
+            JBPermissionsData({operator: callerAddress, projectId: uint56(_projectId), permissionIds: _permissionIds})
         );
 
         if (!_shouldHavePermission) {
-            vm.expectRevert(abi.encodeWithSelector(JBPermissioned.UNAUTHORIZED.selector));
+            vm.expectRevert(abi.encodeWithSelector(JBPermissioned.JBPermissioned_Unauthorized.selector));
         }
 
         vm.prank(callerAddress);
@@ -315,7 +319,7 @@ contract OwnableTest is Test {
         uint256 _projectId = PROJECTS.createFor(projectOwner);
 
         // Should revert because we set both a owner and a projectOwner
-        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.INVALID_NEW_OWNER.selector));
+        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.JBOwnableOverrides_InvalidNewOwner.selector));
 
         // Create the `Ownable` contract.
         new MockOwnable(PROJECTS, PERMISSIONS, address(owner), uint88(_projectId));
@@ -323,7 +327,7 @@ contract OwnableTest is Test {
 
     function testCantInitializeAsRenounced() public {
         // Should revert because we set both a owner and a projectOwner
-        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.INVALID_NEW_OWNER.selector));
+        vm.expectRevert(abi.encodeWithSelector(JBOwnableOverrides.JBOwnableOverrides_InvalidNewOwner.selector));
         // Create the `Ownable` contract.
         new MockOwnable(PROJECTS, PERMISSIONS, address(0), uint88(0));
     }

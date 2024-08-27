@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.23;
+pragma solidity ^0.8.0;
 
 /// @notice Owner information for a given instance of `JBOwnableOverrides`.
 /// @custom:member owner If `projectId` is 0 and this is set, this static address has owner access.
