@@ -64,7 +64,6 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
         _transferOwnership(initialOwner, initialProjectIdOwner);
     }
 
-
     //*********************************************************************//
     // -------------------------- public views --------------------------- //
     //*********************************************************************//
