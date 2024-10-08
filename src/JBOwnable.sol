@@ -18,8 +18,11 @@ import {JBOwnableOverrides} from "./JBOwnableOverrides.sol";
 /// `JBOwner.permissionId` permission.
 /// @dev To use `onlyOwner`, inherit this contract and apply the modifier to a function.
 contract JBOwnable is JBOwnableOverrides {
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    //*********************************************************************//
+    // -------------------------- constructor ---------------------------- //
+    //*********************************************************************//
 
+<<<<<<< HEAD
     /// @dev To make a Juicebox project's owner this contract's owner, pass that project's ID as the
     /// `initialProjectIdOwner`.
     /// @dev To make a specific address the owner, pass that address as the `initialOwner` and `0` as the
@@ -30,21 +33,41 @@ contract JBOwnable is JBOwnableOverrides {
     /// @param initialOwner An address with owner access (until ownership is transferred).
     /// @param initialProjectIdOwner The ID of the Juicebox project whose owner has owner access (until ownership is
     /// transferred).
+=======
+    /// @param permissions The `IJBPermissions` to use for managing permissions.
+    /// @param projects The `IJBProjects` to use for tracking project ownership.
+    /// @param initialOwner The initial owner of the contract.
+    /// @param initialProjectIdOwner The initial project id that owns this contract.
+>>>>>>> main
     constructor(
-        IJBProjects projects,
         IJBPermissions permissions,
+        IJBProjects projects,
         address initialOwner,
         uint88 initialProjectIdOwner
     )
-        JBOwnableOverrides(projects, permissions, initialOwner, initialProjectIdOwner)
+        JBOwnableOverrides(permissions, projects, initialOwner, initialProjectIdOwner)
     {}
 
+<<<<<<< HEAD
     /// @notice Reverts if called by an address without owner access.
+=======
+    //*********************************************************************//
+    // --------------------------- modifiers ----------------------------- //
+    //*********************************************************************//
+
+    /// @notice Reverts if called by an address that is not the owner and does not have permission from the owner.
+>>>>>>> main
     modifier onlyOwner() virtual {
         _checkOwner();
         _;
     }
 
+    //*********************************************************************//
+    // ------------------------ internal functions ----------------------- //
+    //*********************************************************************//
+
+    /// @notice Either `newOwner` or `newProjectId` is non-zero or both are zero. But they can never both be non-zero.
+    /// @dev This function exists because some contracts will try to deploy contracts for a project before
     function _emitTransferEvent(
         address previousOwner,
         address newOwner,
@@ -54,6 +77,10 @@ contract JBOwnable is JBOwnableOverrides {
         virtual
         override
     {
-        emit OwnershipTransferred(previousOwner, newProjectId == 0 ? newOwner : PROJECTS.ownerOf(newProjectId));
+        emit OwnershipTransferred({
+            previousOwner: previousOwner,
+            newOwner: newProjectId == 0 ? newOwner : PROJECTS.ownerOf(newProjectId),
+            caller: msg.sender
+        });
     }
 }
