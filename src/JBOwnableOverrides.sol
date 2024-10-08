@@ -43,8 +43,8 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
     /// To restrict access to a specific address, pass that address as the `initialOwner` and `0` as the
     /// `initialProjectIdOwner`.
     /// @dev The owner can give owner access to other addresses through the `permissions` contract.
-    /// @param projects Mints ERC-721s that represent project ownership and transfers.
     /// @param permissions A contract storing permissions.
+    /// @param projects Mints ERC-721s that represent project ownership and transfers.
     /// @param initialOwner The owner if the `intialProjectIdOwner` is 0 (until ownership is transferred).
     /// @param initialProjectIdOwner The ID of the Juicebox project whose owner is this contract's owner (until
     /// ownership is transferred).

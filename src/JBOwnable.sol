@@ -22,23 +22,16 @@ contract JBOwnable is JBOwnableOverrides {
     // -------------------------- constructor ---------------------------- //
     //*********************************************************************//
 
-<<<<<<< HEAD
     /// @dev To make a Juicebox project's owner this contract's owner, pass that project's ID as the
     /// `initialProjectIdOwner`.
     /// @dev To make a specific address the owner, pass that address as the `initialOwner` and `0` as the
     /// `initialProjectIdOwner`.
     /// @dev The owner can give other addresses owner access through the `permissions` contract.
-    /// @param projects Mints ERC-721s that represent project ownership and transfers.
     /// @param permissions A contract storing permissions.
+    /// @param projects Mints ERC-721s that represent project ownership and transfers.
     /// @param initialOwner An address with owner access (until ownership is transferred).
     /// @param initialProjectIdOwner The ID of the Juicebox project whose owner has owner access (until ownership is
     /// transferred).
-=======
-    /// @param permissions The `IJBPermissions` to use for managing permissions.
-    /// @param projects The `IJBProjects` to use for tracking project ownership.
-    /// @param initialOwner The initial owner of the contract.
-    /// @param initialProjectIdOwner The initial project id that owns this contract.
->>>>>>> main
     constructor(
         IJBPermissions permissions,
         IJBProjects projects,
@@ -48,15 +41,11 @@ contract JBOwnable is JBOwnableOverrides {
         JBOwnableOverrides(permissions, projects, initialOwner, initialProjectIdOwner)
     {}
 
-<<<<<<< HEAD
-    /// @notice Reverts if called by an address without owner access.
-=======
     //*********************************************************************//
     // --------------------------- modifiers ----------------------------- //
     //*********************************************************************//
 
-    /// @notice Reverts if called by an address that is not the owner and does not have permission from the owner.
->>>>>>> main
+    /// @notice Reverts if called by an address without owner access.
     modifier onlyOwner() virtual {
         _checkOwner();
         _;
