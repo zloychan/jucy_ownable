@@ -99,6 +99,58 @@ abstract contract JBOwnableOverrides is Context, JBPermissioned, IJBOwnable {
         });
     }
 
+    //*********************************************************************//
+    // ---------------------- public transactions ------------------------ //
+    //*********************************************************************//
+
+    /// @notice Gives up ownership of this contract, making it impossible to call `onlyOwner` and `_checkOwner`
+    /// functions.
+    /// @notice This can only be called by the current owner.
+    function renounceOwnership() public virtual override {
+        _checkOwner();
+        _transferOwnership(address(0), 0);
+    }
+
+    /// @notice Sets the permission ID the owner can use to give other addresses owner access.
+    /// @notice This can only be called by the current owner.
+    /// @param permissionId The permission ID to use for `onlyOwner`.
+    function setPermissionId(uint8 permissionId) public virtual override {
+        _checkOwner();
+        _setPermissionId(permissionId);
+    }
+
+    /// @notice Transfers ownership of this contract to a new address (the `newOwner`). Can only be called by the
+    /// current owner.
+    /// @notice This can only be called by the current owner.
+    /// @param newOwner The address to transfer ownership to.
+    function transferOwnership(address newOwner) public virtual override {
+        _checkOwner();
+        if (newOwner == address(0)) {
+            revert JBOwnableOverrides_InvalidNewOwner();
+        }
+
+        _transferOwnership(newOwner, 0);
+    }
+
+    /// @notice Transfer ownership of this contract to a new Juicebox project.
+    /// @notice This can only be called by the current owner.
+    /// @dev The `projectId` must fit within a `uint88`.
+    /// @param projectId The ID of the project to transfer ownership to.
+    function transferOwnershipToProject(uint256 projectId) public virtual override {
+        _checkOwner();
+        if (projectId == 0 || projectId > type(uint88).max) {
+            revert JBOwnableOverrides_InvalidNewOwner();
+        }
+
+        _transferOwnership(address(0), uint88(projectId));
+    }
+
+    //*********************************************************************//
+    // ------------------------ internal functions ----------------------- //
+    //*********************************************************************//
+
+    /// @notice Either `newOwner` or `newProjectId` is non-zero or both are zero. But they can never both be non-zero.
+    /// @dev This function exists because some contracts will try to deploy contracts for a project before
     function _emitTransferEvent(address previousOwner, address newOwner, uint88 newProjectId) internal virtual;
 
     /// @notice Sets the permission ID the owner can use to give other addresses owner access.
