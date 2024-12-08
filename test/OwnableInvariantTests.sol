@@ -23,7 +23,7 @@ contract OwnableInvariantTests is Test {
     function invariant_cantBelongToUserAndProject() public {
         (, uint88 projectId,) = handler.OWNABLE().jbOwner();
         assertTrue(
-            ///owner == address(0) ||
+            ///owner == address(0) ||  // @audit - Interesting, why this is commented
             projectId == uint256(0)
         );
     }

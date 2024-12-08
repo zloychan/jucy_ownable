@@ -7,7 +7,7 @@ pragma solidity ^0.8.0;
 /// `owner` address has owner access.
 /// @custom:member permissionId The permission ID which corresponds to owner access. See `JBPermissions` in `nana-core`
 /// and `nana-permission-ids`.
-struct JBOwner {
+struct JBOwner {  // @audit - дублирование projectId с core JBProjects.sol
     address owner;
     uint88 projectId;
     uint8 permissionId;

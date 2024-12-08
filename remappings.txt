@@ -1,0 +1,9 @@
+@bananapus/=node_modules/@bananapus/
+@chainlink/=node_modules/@chainlink/
+@eth-optimism/=node_modules/@eth-optimism/
+@openzeppelin/=node_modules/@openzeppelin/
+@prb/=node_modules/@prb/
+@scroll-tech/=node_modules/@scroll-tech/
+@uniswap/=node_modules/@uniswap/
+ds-test/=lib/forge-std/lib/ds-test/src/
+forge-std/=lib/forge-std/src/
